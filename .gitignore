@@ -1,0 +1,10 @@
+.env
+.env.*
+node_modules/
+dist/
+build/
+.vercel/
+.DS_Store
+*.log
+npm-debug.log*
+# asset binari pesanti: valutare git-lfs se necessario
