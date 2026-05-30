@@ -1,4 +1,8 @@
 # DECISIONI — scelte curatoriali prese in autonomia
 Giulia ha delegato tutte le scelte ("fai tu"). Qui registro ogni decisione e il perché.
 
-- **Nome artista:** TBD — default provvisorio "Matteo Proietti" (romano, anti-cliché; "Proietti" = trovatelli, risonanza con l'abbandono). Da confermare in Workstream A.
+- **Nome artista: CONFERMATO → Matteo Proietti (Roma, 2001).** «Proietti» = cognome storico dei trovatelli romani (esposti): anonimo all'orecchio ma porta la frattura (sensibilità esposta, non riconosciuta come figlia). «Matteo» piano, da figlio qualunque. 2001 → 25 anni nel 2026. Forma catalogo: «Roma, 2001 · Vive e lavora a Roma»; forma breve «Proietti» nei testi di parete.
+- **Provenienza intrecciata:** i 3 versi abbandonati (il pane / il recinto / la misura) sono citati letteralmente nelle opere 2, 5, 10 e nell'archivio (op. 6); il frammento III («un millimetro») rima col seme del brief.
+- **Due voci separate:** curatore in 3ª persona (bio, parete) vs artista in 1ª (statement, versi), mai mescolate; i testi di parete restano descrizione di stato, mai confessione.
+- **Anti-Black Mirror riga per riga:** ogni testo = stato non storia, sul «prima», umano come soggetto, niente morale né futuro distopico.
+- **Workstream A: COMPLETATO** (nome, biografia 484p, statement 216p, 3 versi, 10 testi di parete + sala 144p). Nota: bio espandibile a 520-550p in impaginazione, solo sul paragrafo lignaggio.
