@@ -8,7 +8,11 @@
 import { opere } from '../data/opere.js';
 import { createPlate } from './plate.js';
 
-export function renderCorpus(mountEl) {
+/**
+ * Costruisce la griglia. `onOpen(op, cardEl)` (opzionale) viene chiamato quando
+ * una scheda è attivata (click / Enter / Spazio): apre la vista singola opera.
+ */
+export function renderCorpus(mountEl, onOpen) {
   if (!mountEl) return;
   const frag = document.createDocumentFragment();
 
@@ -19,8 +23,23 @@ export function renderCorpus(mountEl) {
     card.setAttribute('data-hot', '');   // zona "calda" per il cursore
     card.setAttribute('data-reveal', '');
     card.setAttribute('data-reveal-delay', String((idx % 3) * 90));
+    card.dataset.no = op.no;
     // provenienza nascosta: il verso vive anche come attributo + commento
     card.setAttribute('data-verso', op.verso || '');
+
+    // la scheda apre la vista singola opera
+    if (typeof onOpen === 'function') {
+      card.setAttribute('role', 'button');
+      card.setAttribute('aria-haspopup', 'dialog');
+      card.setAttribute('aria-label', `Opera ${op.no}: ${op.titolo} — apri la scheda`);
+      card.addEventListener('click', () => onOpen(op, card));
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+          e.preventDefault();
+          onOpen(op, card);
+        }
+      });
+    }
 
     // provino arrestato (immagine reale se presente, altrimenti rumore)
     card.appendChild(createPlate(op));

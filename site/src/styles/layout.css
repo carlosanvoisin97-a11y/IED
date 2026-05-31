@@ -312,3 +312,331 @@
   .climate { right: var(--space-m); top: auto; bottom: var(--space-m); }
   .pen-frame, .blade { display: none; } /* meno cornice su mobile */
 }
+
+/* =============================================================================
+   OVERLAY — vista singola opera (scheda a 6 voci + il lavoro)
+   La cornice è impeccabile (cartiglio museale) attorno a contenuti che non si
+   risolvono. UI reattiva e breve (--dur-ui), atmosfera lenta.
+   ============================================================================= */
+
+/* blocca lo scroll del fondo quando l'overlay è aperto */
+html.overlay-lock,
+html.overlay-lock body { overflow: hidden; }
+
+.opera-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-cursor); /* sopra tutto, tranne il cursore custom che è pointer-none */
+  display: none;
+  align-items: stretch;
+  justify-content: center;
+  padding: clamp(var(--space-s), 4vh, var(--space-l));
+  background: color-mix(in oklab, var(--ink-void) 86%, transparent);
+  backdrop-filter: blur(8px) saturate(0.85);
+  -webkit-backdrop-filter: blur(8px) saturate(0.85);
+  opacity: 0;
+  transition: opacity var(--dur-ui) var(--ease-out);
+}
+.opera-overlay.is-open { display: flex; opacity: 1; }
+
+/* il pannello: un recinto chiuso, bordo esatto, scroll interno */
+.opera {
+  position: relative;
+  width: min(100%, 1100px);
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--ink-ash);
+  border: var(--border-pen);
+  border-radius: var(--radius);
+  box-shadow: 0 30px 90px -30px #000;
+  outline: none;
+  /* ingresso non risolto: parte appena giù e sfocato, si ferma a 0.985 */
+  transform: translateY(10px);
+  filter: blur(4px);
+  opacity: 0;
+  transition:
+    transform var(--dur-enter) var(--ease-out),
+    filter var(--dur-enter) var(--ease-out),
+    opacity var(--dur-enter) var(--ease-out);
+}
+.opera-overlay.is-open .opera {
+  transform: translateY(0);
+  filter: blur(0);
+  opacity: 0.985;
+}
+@media (prefers-reduced-motion: reduce) {
+  .opera-overlay, .opera { transition: none; }
+  .opera { transform: none; filter: none; opacity: 1; }
+}
+
+.opera__close {
+  position: sticky;
+  top: var(--space-s);
+  margin-left: auto;
+  margin-right: var(--space-s);
+  margin-top: var(--space-s);
+  z-index: 2;
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--step-2);
+  line-height: 1;
+  color: var(--bone);
+  background: color-mix(in oklab, var(--ink-pelt) 70%, transparent);
+  border: 1px solid var(--ink-pelt);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color var(--dur-ui) var(--ease-out),
+              border-color var(--dur-ui) var(--ease-out),
+              background var(--dur-ui) var(--ease-out);
+}
+.opera__close:hover { color: var(--bone-raw); border-color: var(--held-red); }
+
+.opera__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: clamp(var(--space-m), 4vw, var(--space-xl));
+  padding: 0 clamp(var(--space-m), 4vw, var(--space-xl)) clamp(var(--space-l), 6vh, var(--space-2xl));
+  margin-top: calc(-1 * var(--space-l)); /* riassorbe lo spazio del close sticky */
+}
+@media (max-width: 860px) {
+  .opera__inner { grid-template-columns: 1fr; margin-top: var(--space-s); }
+}
+
+/* --- IL LAVORO (stage) ---------------------------------------------------- */
+.opera__stage { display: flex; flex-direction: column; gap: var(--space-s); min-width: 0; }
+
+.opera__image {
+  position: relative;
+  background: var(--ink-void);
+  border: var(--border-pen);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.opera__image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* l'immagine arrestata: niente "finitura" lucida */
+  filter: contrast(0.98);
+}
+
+/* canvas dell'opera viva (op07): riquadro 3:4, dimensioni esplicite per il WebGL */
+.opera__canvas-wrap {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  width: 100%;
+  background: var(--ink-void);
+  border: var(--border-pen);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.opera__canvas { display: block; width: 100%; height: 100%; }
+.opera__fallback {
+  position: absolute; inset: 0;
+  display: none;
+  background:
+    var(--warmth-core),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+.opera__stage-state { padding-top: var(--space-2xs); }
+
+/* op02 / op09 — superficie d'ascolto */
+.opera__audio {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-m);
+  text-align: center;
+  padding: var(--space-l);
+  background: var(--ink-void);
+  background-image: var(--warmth-core);
+  border: var(--border-pen);
+  border-radius: var(--radius);
+}
+.opera__audio-viz {
+  font-family: var(--font-mono);
+  font-size: var(--step-4);
+  color: var(--breath-grey);
+  letter-spacing: 0.2em;
+  opacity: 0.7;
+  transition: color var(--dur-ui) var(--ease-out), opacity var(--dur-breath) var(--ease-breath);
+}
+.opera__audio.is-live .opera__audio-viz {
+  color: var(--held-red);
+  animation: pulse-hold var(--dur-breath) var(--ease-breath) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .opera__audio.is-live .opera__audio-viz { animation: none; }
+}
+.opera__audio-hint {
+  font-family: var(--font-text);
+  font-style: italic;
+  color: var(--breath-grey);
+  font-size: var(--step--1);
+  max-width: 34ch;
+}
+.opera__listen {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--bone);
+  background: color-mix(in oklab, var(--ink-pelt) 70%, transparent);
+  border: 1px solid var(--ink-pelt);
+  border-radius: var(--radius);
+  padding: var(--space-2xs) var(--space-m);
+  cursor: pointer;
+  transition: color var(--dur-ui) var(--ease-out),
+              border-color var(--dur-ui) var(--ease-out),
+              background var(--dur-ui) var(--ease-out);
+}
+.opera__listen:hover { color: var(--bone-raw); border-color: var(--held-red); }
+.opera__listen:disabled { opacity: 0.5; cursor: progress; }
+
+/* op10 — il prompt mai eseguito */
+.opera__prompt {
+  background: var(--ink-void);
+  border: var(--border-pen);
+  border-left: 2px solid var(--held-red-deep);
+  border-radius: var(--radius);
+  padding: var(--space-m);
+  display: flex; flex-direction: column; gap: var(--space-s);
+}
+.opera__prompt-text {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  line-height: 1.7;
+  color: var(--bone);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* op03 — la formula non miscelata */
+.opera__formula {
+  background: var(--ink-void);
+  border: var(--border-pen);
+  border-radius: var(--radius);
+  padding: var(--space-m);
+  display: flex; flex-direction: column; gap: var(--space-s);
+}
+.opera__formula-list { display: flex; flex-direction: column; }
+.opera__formula-row {
+  padding: var(--space-s) 0;
+  border-bottom: 1px solid color-mix(in oklab, var(--ink-pelt) 80%, transparent);
+}
+.opera__formula-row:last-child { border-bottom: 0; }
+.opera__formula-top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-s); }
+.opera__formula-nota {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--step-1);
+  color: var(--bone-raw);
+}
+.opera__formula-parte {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--held-red);
+  letter-spacing: var(--track-label);
+}
+.opera__formula-dett {
+  font-family: var(--font-text);
+  font-size: var(--step--1);
+  color: var(--breath-grey);
+  margin-top: var(--space-3xs);
+}
+
+/* op06 — Archivio Provenienza */
+.opera__archive { display: flex; flex-direction: column; gap: var(--space-l); }
+.opera__archive-block { display: flex; flex-direction: column; gap: var(--space-s); }
+.opera__prov {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3xs) var(--space-s);
+  padding: var(--space-s) 0;
+  border-top: 1px solid color-mix(in oklab, var(--ink-pelt) 80%, transparent);
+}
+.opera__prov-no { align-self: start; color: var(--breath-grey); }
+.opera__prov-titolo {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--bone-raw);
+  font-size: var(--step-0);
+}
+.opera__prov-params {
+  grid-column: 1 / -1;
+  color: var(--breath-grey);
+  text-transform: none;
+  letter-spacing: 0.04em;
+  font-size: var(--step--1);
+}
+.opera__prov-prompt {
+  grid-column: 1 / -1;
+  font-family: var(--font-text);
+  font-style: italic;
+  color: var(--breath-haze);
+  font-size: var(--step--1);
+  max-width: none;
+}
+.opera__verso-block { display: flex; flex-direction: column; gap: var(--space-2xs); }
+.opera__verso-titolo { color: var(--breath-grey); text-transform: none; letter-spacing: 0.04em; }
+.opera__verso-text {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--step-0);
+  line-height: 1.6;
+  color: var(--bone);
+  white-space: pre-wrap;
+}
+
+/* --- LA SCHEDA A 6 VOCI (cartiglio) -------------------------------------- */
+.opera__sheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  /* righello mono a sinistra, da referto/museo */
+  border-left: var(--border-pen);
+  padding-left: clamp(var(--space-m), 3vw, var(--space-l));
+  min-width: 0;
+}
+@media (max-width: 860px) {
+  .opera__sheet { border-left: 0; padding-left: 0; border-top: var(--border-pen); padding-top: var(--space-m); }
+}
+.opera__no { color: var(--breath-grey); text-transform: none; letter-spacing: 0.06em; }
+.opera__title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 340;
+  font-size: var(--step-3);
+  color: var(--bone-raw);
+}
+.opera__voci { display: grid; grid-template-columns: max-content 1fr; gap: var(--space-2xs) var(--space-m); }
+.opera__voce-term { color: var(--breath-grey); padding-top: 0.18em; }
+.opera__voce-val {
+  font-family: var(--font-text);
+  font-size: var(--step--1);
+  line-height: 1.6;
+  color: var(--bone);
+}
+.opera__wall { display: flex; flex-direction: column; gap: var(--space-2xs); margin-top: var(--space-2xs); }
+.opera__wall-text {
+  font-family: var(--font-text);
+  font-size: var(--step-0);
+  line-height: var(--leading-air);
+  color: var(--bone);
+  max-width: 60ch;
+}
+.opera__verso {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--step--1);
+  color: var(--breath-grey);
+  border-top: 1px solid color-mix(in oklab, var(--ink-pelt) 80%, transparent);
+  padding-top: var(--space-s);
+}

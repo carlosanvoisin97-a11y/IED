@@ -1,14 +1,14 @@
 # STATUS — "L'attesa del coltello" · build autonomo
 Aggiornato: 2026-05-31 (preflight)
 
-## Stato globale: EXECUTING — Wave 2 ✓ → Wave 3 (sito+schede · allestimento · comms)
+## Stato globale: EXECUTING — Wave 3 ✓ → Wave 4 (catalogo PDF · deploy Vercel · PR · report)
 Engine: `executing-plans` + background agents + `loop` (la skill `/goal` non è disponibile in questa sessione → sostituita).
 Spec di riferimento: `CONCEPT.md`. Budget: vedi `SPESE.md` (tetti rigidi).
 
 ## Workstream
 - [x] A · Scrittura — Matteo Proietti; bio (484p), statement (216p), 3 versi, 10 testi di parete + sala ✓
 - [ ] B · Corpus immagini (opere 1,4,5,8 + schede a 6 voci)
-- [ ] C · Sito + opere vive (Three.js/WebGL, interattivo)
+- [x] C · Sito + opere vive ✓ — integrato, build OK, verifica headless PASS (0 errori console)
 - [ ] D · Audio & olfatto (op. 2 lamento, 9 respiro, formula 3)
 - [ ] E · Video/loop (op. 7 interpolazione)
 - [ ] F · Allestimento (pianta 95 m², testo di parete, scheda sensoriale, render)
@@ -28,3 +28,4 @@ Spec di riferimento: `CONCEPT.md`. Budget: vedi `SPESE.md` (tetti rigidi).
 - 2026-05-31: ritocchi COMPLETATI — op1 (+rosso tint), op8 (membrana/pelle + livido). Corpus 4/4 APPROVATO. Stability 21 cr (971 residui). WAVE 2 ✓ → lancio Wave 3 (sito+schede, allestimento, comms).
 - 2026-05-31: Wave 3/H (comms) COMPLETATO — comunicato, 2 post (op4 teaser, op5 concettuale), invito vernissage, recensione fittizia («Campo Neutro», C. Ripamonti). (sito + allestimento in corso)
 - 2026-05-31: Wave 3/F (allestimento) COMPLETATO — pianta.svg (recinto a serpentina, 10 opere collocate), scheda-sensoriale, 2 render (7 cr → 964 residui), allestimento.md. (sito C in corso, ultimo della Wave 3)
+- 2026-05-31: Wave 3/C (sito+schede) COMPLETATO — schede a 6 voci (10 opere; op3 formula, op6 Provenienza, op10 prompt mai eseguito), integrazione + opera-overlay, build OK, verifica headless PASS. Pronto al deploy. WAVE 3 ✓ → Wave 4.

@@ -13,6 +13,7 @@ import { createDenoiseScene } from './scenes/denoise.js';
 import { renderCorpus } from './ui/corpus.js';
 import { initReveal } from './ui/reveal.js';
 import { initCursor } from './ui/cursor.js';
+import { initOperaOverlay } from './ui/opera-overlay.js';
 
 function boot() {
   // 1. scena 3D della home: il denoise sospeso
@@ -23,19 +24,25 @@ function boot() {
     scene = createDenoiseScene(canvas, fallback);
   }
 
-  // 2. griglia delle 10 opere (dal dato)
-  const corpusMount = document.getElementById('corpus-grid');
-  renderCorpus(corpusMount);
+  // 2. vista singola opera (overlay): scheda a 6 voci + il lavoro (immagine /
+  //    canvas vivo / audio / archivio / prompt). Inizializzata prima del corpus
+  //    così la griglia può agganciare l'apertura.
+  const overlay = initOperaOverlay(document);
 
-  // 3. ingressi allo scroll (dopo aver montato il corpus, così li osserva)
+  // 3. griglia delle 10 opere (dal dato); ogni scheda apre l'overlay
+  const corpusMount = document.getElementById('corpus-grid');
+  renderCorpus(corpusMount, (op, cardEl) => overlay.openOpera(op, cardEl));
+
+  // 4. ingressi allo scroll (dopo aver montato il corpus, così li osserva)
   initReveal(document);
 
-  // 4. cursore custom (no-op su touch / reduced-motion)
+  // 5. cursore custom (no-op su touch / reduced-motion)
   initCursor();
 
   // teardown su unload (igiene memoria, principi 3D §1)
   window.addEventListener('beforeunload', () => {
     if (scene) scene.destroy();
+    if (overlay) overlay.destroy(); // chiude eventuali moduli vivi (RAF/audio)
   });
 }
 
