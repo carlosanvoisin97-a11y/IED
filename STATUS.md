@@ -1,7 +1,7 @@
 # STATUS — "L'attesa del coltello" · build autonomo
 Aggiornato: 2026-05-31 (preflight)
 
-## Stato globale: ✅ COMPLETO — sito LIVE (12 opere), catalogo 31 pp, pacchetto di consegna pronto, PR aperta. Email: pacchetto da inviare a mano (connettore MS365 bloccato).
+## Stato globale: ✅ COMPLETO — sito LIVE (12 opere + effetti Wave 6: entrata/soglia, navigazione opere, card 3D), catalogo 31 pp + versione HTML online, pacchetto pronto, PR aperta. Email: invio manuale (MS365 bloccato).
 Engine: `executing-plans` + background agents + `loop` (la skill `/goal` non è disponibile in questa sessione → sostituita).
 Spec di riferimento: `CONCEPT.md`. Budget: vedi `SPESE.md` (tetti rigidi).
 

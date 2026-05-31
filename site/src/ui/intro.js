@@ -17,7 +17,8 @@ import { prefersReducedMotion } from '../utils/env.js';
 const KEY = 'intro-v1';
 const PAROLE = ['Il taglio.', 'Il prima.', 'L’attesa.'];
 const WORD_MS = 1400;   // permanenza di ciascuna parola
-const FADE_MS = 520;    // dissolvenza finale dell'overlay (uscita silenziosa)
+const FADE_MS = 520;    // (fallback) dissolvenza finale dell'overlay
+const PART_MS = 1100;   // apertura delle due ante: l'ingresso «nella sala»
 
 export function initIntro() {
   // skip: reduced-motion, già vista in questa sessione, o ambiente senza sessionStorage
@@ -31,6 +32,11 @@ export function initIntro() {
   const root = document.createElement('div');
   root.className = 'intro';
   root.setAttribute('aria-hidden', 'true'); // puramente atmosferico: il contenuto è già sotto
+
+  // due ante scure che, all'uscita, si separano come una soglia: si «entra nella sala»
+  root.innerHTML =
+    '<div class="intro__pane intro__pane--l" aria-hidden="true"></div>' +
+    '<div class="intro__pane intro__pane--r" aria-hidden="true"></div>';
 
   const wordEl = document.createElement('span');
   wordEl.className = 'intro__word';
@@ -76,9 +82,10 @@ export function initIntro() {
     done = true;
     clearTimers();
     detach();
-    root.classList.add('is-closing'); // dissolvenza dell'intero overlay
+    // uscita = apertura della soglia: le due ante si separano e si entra nella sala
+    root.classList.add('is-opening');
     document.documentElement.classList.remove('intro-lock');
-    setTimeout(() => { if (root.parentNode) root.parentNode.removeChild(root); }, FADE_MS + 40);
+    setTimeout(() => { if (root.parentNode) root.parentNode.removeChild(root); }, PART_MS + 60);
   }
 
   // dismiss su interazione: click, wheel, tasto, touch

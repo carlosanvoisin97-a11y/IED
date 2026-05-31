@@ -8,6 +8,33 @@
 import { opere } from '../data/opere.js';
 import { createPlate } from './plate.js';
 
+/* Tilt 3D al passaggio del cursore — solo con mouse fine e senza reduced-motion.
+   Durante il tilt la classe is-tilt ferma il galleggiamento (niente conflitto di
+   transform); all'uscita il transform inline si azzera e il float riprende. */
+const canTilt =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(hover: hover) and (pointer: fine)').matches &&
+  !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function attachTilt(card) {
+  let raf = 0;
+  card.addEventListener('mouseenter', () => card.classList.add('is-tilt'));
+  card.addEventListener('mousemove', (e) => {
+    const r = card.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width - 0.5;   // -0.5 .. 0.5
+    const py = (e.clientY - r.top) / r.height - 0.5;
+    if (raf) cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      card.style.transform = `rotateX(${(-py * 5).toFixed(2)}deg) rotateY(${(px * 6).toFixed(2)}deg)`;
+    });
+  });
+  card.addEventListener('mouseleave', () => {
+    if (raf) cancelAnimationFrame(raf);
+    card.classList.remove('is-tilt');
+    card.style.transform = ''; // torna al galleggiamento
+  });
+}
+
 /**
  * Costruisce la griglia. `onOpen(op, cardEl)` (opzionale) viene chiamato quando
  * una scheda è attivata (click / Enter / Spazio): apre la vista singola opera.
@@ -24,6 +51,7 @@ export function renderCorpus(mountEl, onOpen) {
     card.setAttribute('data-reveal', '');
     card.setAttribute('data-reveal-delay', String((idx % 3) * 90));
     card.dataset.no = op.no;
+    card.style.setProperty('--i', String(idx)); // sfasa il galleggiamento delle schede
     // provenienza nascosta: il verso vive anche come attributo + commento
     card.setAttribute('data-verso', op.verso || '');
 
@@ -59,6 +87,7 @@ export function renderCorpus(mountEl, onOpen) {
     if (op.seed) meta.appendChild(el('span', 'work__medium', op.seed));
 
     card.append(no, medium, title, verso, meta);
+    if (canTilt) attachTilt(card);
 
     // commento HTML con la provenienza (verso sepolto, leggibile solo nel sorgente)
     card.appendChild(document.createComment(` provenienza: ${op.verso} `));

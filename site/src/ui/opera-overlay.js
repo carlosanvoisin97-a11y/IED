@@ -65,6 +65,11 @@ export function initOperaOverlay(root = document) {
         <div class="opera__stage"></div>
         <div class="opera__sheet"></div>
       </div>
+      <nav class="opera__nav" aria-label="percorso tra le opere">
+        <button class="opera__nav-btn opera__prev" type="button" aria-label="opera precedente">‹</button>
+        <span class="opera__pos meta" aria-hidden="true"></span>
+        <button class="opera__nav-btn opera__next" type="button" aria-label="opera successiva">›</button>
+      </nav>
     </div>`;
   document.body.appendChild(backdrop);
 
@@ -72,32 +77,51 @@ export function initOperaOverlay(root = document) {
   const closeBtn = backdrop.querySelector('.opera__close');
   const stage = backdrop.querySelector('.opera__stage');
   const sheet = backdrop.querySelector('.opera__sheet');
+  const prevBtn = backdrop.querySelector('.opera__prev');
+  const nextBtn = backdrop.querySelector('.opera__next');
+  const posEl = backdrop.querySelector('.opera__pos');
 
   let live = null; // handle del modulo vivo attivo (per il cleanup)
   let lastFocus = null; // elemento a cui restituire il focus alla chiusura
   let isOpen = false;
+  let currentIndex = -1; // posizione nel corpus, per scorrere tra le opere
   let openToken = 0; // invalida i controlli asincroni (es. HEAD del video) al cambio opera
 
   // --- apertura -------------------------------------------------------------
-  function openOpera(op, triggerEl) {
-    if (!op) return;
-    openToken += 1; // invalida eventuali HEAD/async della precedente apertura
+  // mostra una specifica opera nell'overlay (usato all'apertura E nello scorrere)
+  function showOpera(op) {
+    openToken += 1; // invalida eventuali HEAD/async della precedente
     closeLive(); // igiene: mai due moduli vivi insieme
-    lastFocus = triggerEl || document.activeElement;
+    currentIndex = opere.findIndex((o) => o.no === op.no);
 
     stage.innerHTML = '';
     sheet.innerHTML = '';
-
     renderStage(op, stage);
     renderSheet(op, sheet);
+
+    if (posEl) posEl.textContent = `№ ${op.no} / ${String(opere.length).padStart(2, '0')}`;
+    dialog.scrollTop = 0;
+  }
+
+  function openOpera(op, triggerEl) {
+    if (!op) return;
+    lastFocus = triggerEl || document.activeElement;
+    showOpera(op);
 
     backdrop.classList.add('is-open');
     backdrop.setAttribute('aria-hidden', 'false');
     document.documentElement.classList.add('overlay-lock');
     isOpen = true;
 
-    // focus al dialog (gestione tastiera)
-    dialog.scrollTop = 0;
+    dialog.focus({ preventScroll: true }); // focus al dialog (tastiera)
+  }
+
+  // scorrere tra le opere senza chiudere: distrugge il modulo vivo corrente e
+  // monta la nuova; wrap agli estremi (il recinto è un anello)
+  function goTo(delta) {
+    if (!isOpen || currentIndex < 0) return;
+    const n = opere.length;
+    showOpera(opere[(currentIndex + delta + n) % n]);
     dialog.focus({ preventScroll: true });
   }
 
@@ -381,14 +405,28 @@ export function initOperaOverlay(root = document) {
 
   /* --- eventi: chiusura, Esc, click sul backdrop, focus trap --------------- */
   closeBtn.addEventListener('click', closeOpera);
+  prevBtn.addEventListener('click', () => goTo(-1));
+  nextBtn.addEventListener('click', () => goTo(1));
   backdrop.addEventListener('mousedown', (e) => {
     if (e.target === backdrop) closeOpera();
   });
   document.addEventListener('keydown', (e) => {
     if (!isOpen) return;
     if (e.key === 'Escape') { closeOpera(); return; }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(-1); return; }
+    if (e.key === 'ArrowRight') { e.preventDefault(); goTo(1); return; }
     if (e.key === 'Tab') trapFocus(e);
   });
+
+  // swipe orizzontale (touch): scorrere tra le opere
+  let touchX = null;
+  backdrop.addEventListener('touchstart', (e) => { touchX = e.changedTouches[0].clientX; }, { passive: true });
+  backdrop.addEventListener('touchend', (e) => {
+    if (touchX == null || !isOpen) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    touchX = null;
+    if (Math.abs(dx) > 56) goTo(dx < 0 ? 1 : -1); // swipe ← avanti · → indietro
+  }, { passive: true });
 
   function trapFocus(e) {
     const focusables = dialog.querySelectorAll(
