@@ -1,7 +1,7 @@
 # STATUS — "L'attesa del coltello" · build autonomo
 Aggiornato: 2026-05-31 (preflight)
 
-## Stato globale: EXECUTING — Wave 4 (catalogo ✓, deploy ✓) → Wave 5 (effetti/hero/op11-12/Veo) + PR + report
+## Stato globale: ✅ COMPLETO — sito LIVE (12 opere), catalogo 31 pp, pacchetto di consegna pronto, PR aperta. Email: pacchetto da inviare a mano (connettore MS365 bloccato).
 Engine: `executing-plans` + background agents + `loop` (la skill `/goal` non è disponibile in questa sessione → sostituita).
 Spec di riferimento: `CONCEPT.md`. Budget: vedi `SPESE.md` (tetti rigidi).
 
@@ -14,6 +14,11 @@ Richieste utente (2026-05-31):
 - **Effetti da `angelini-academy` (versione -dev mockup):** loader con scritte, effetti 3D, ecc. — solo ciò che si adatta senza snaturare concept/stile attuali.
   - STUDIO FATTO → PORTARE (riadattati vanilla, palette fredda): (1) **IntroLoader** = loader a parole «Il taglio. / Il prima. / L'attesa.» (serif sottile, osso su #0d0d0b, ~1400ms/parola, uscita silenziosa, sessionStorage); (2) **HeroGrain** SVG feTurbulence (opacity ~0.08, baseFreq 0.92); (3) **MouseGlow** ridotto, quasi incolore. EVITARE: ponte/molecole 3D, scroll orizzontale, bottoni magnetici, blob caldi.
   - op11 = "Calco del fiato" (immagine arrestata); op12 = "L'ultima riga" (testo generativo, si ferma 1 char prima della fine).
+
+### Consegna finale (richieste utente 2026-05-31, in coda)
+- **Catalogo HTML+PDF:** NIENTE testo attaccato ai margini esterni. Container centrato + margini generosi (soluzione elegante da designer), inset del running header; migliorare MOLTO l'uso degli spazi (soprattutto la vista HTML). Da fare INSIEME alla rigenerazione a 12 opere.
+- **Cartella di consegna completa:** link live, PDF, singole immagini, TUTTO + README breve e chiaro coi contenuti.
+- **Invio via Outlook** a **g.larosa@ied.edu** (non perdere nulla).
 - Poi: rebuild + **redeploy Vercel** + **rigenerare il catalogo a 12 opere**.
 
 ## Workstream

@@ -52,24 +52,26 @@
 /* ---------- Pagina ---------- */
 @page{
   size:A4 portrait;            /* 210 × 297 mm */
-  margin:22mm 20mm 20mm 20mm;
+  /* margini ampi e arieggiati; il cartiglio vive DENTRO il margine,
+     staccato dal bordo della carta (inset via padding sui margin-box) */
+  margin:26mm 24mm 24mm 24mm;
   /* cartiglio a piè di pagina: numero + sala */
   @bottom-left{
     content:"L'attesa del coltello · Sala I";
     font-family:'IBMPlexMono',monospace;
     font-size:7pt; letter-spacing:0.14em; color:#8A8077;
-    text-transform:uppercase; padding-bottom:3mm;
+    text-transform:uppercase; padding-bottom:6mm; padding-left:1mm;
   }
   @bottom-right{
     content:counter(page);
     font-family:'IBMPlexMono',monospace;
-    font-size:7.5pt; letter-spacing:0.18em; color:#5C544E; padding-bottom:3mm;
+    font-size:7.5pt; letter-spacing:0.18em; color:#5C544E; padding-bottom:6mm; padding-right:1mm;
   }
   @top-right{
     content:"Matteo Proietti · MMXXVI";
     font-family:'IBMPlexMono',monospace;
     font-size:6.6pt; letter-spacing:0.16em; color:#A89E92;
-    text-transform:uppercase; padding-top:3mm;
+    text-transform:uppercase; padding-top:6mm; padding-right:1mm;
   }
 }
 /* pagine scure full-bleed: niente cartiglio, niente margini di pagina */
@@ -99,6 +101,66 @@ body{
   font-weight:400;
   text-rendering:optimizeLegibility;
   font-feature-settings:"liga" 1,"calt" 1,"onum" 1,"pnum" 1;
+}
+
+/* --------------------------------------------------------------------
+   VISTA A SCHERMO — container centrato (il PDF usa @page; lo schermo
+   non rendeva i margini, quindi il contenuto toccava i bordi e il
+   cartiglio sembrava incollato all'angolo). Qui diamo aria laterale
+   generosa e un running header/footer che non toccano mai il bordo.
+   In stampa (PDF) tutto questo è neutro: domina @page.
+   -------------------------------------------------------------------- */
+@media screen{
+  body{
+    /* fascia esterna ampia attorno alla pagina, mai a filo */
+    padding:48px clamp(20px,6vw,96px) 96px;
+    background:
+      radial-gradient(120% 60% at 50% 0%, #ECE4D6 0%, var(--paper) 55%) fixed;
+  }
+  /* ogni macro-blocco di prima livello diventa una "pagina" centrata,
+     con margini laterali generosi e respiro verticale */
+  body > section,
+  body > article{
+    max-width:860px;
+    margin-left:auto; margin-right:auto;
+    background:var(--paper);
+    padding:30px clamp(22px,4.4vw,64px) 36px;
+    box-shadow:0 1px 2px rgba(33,27,23,0.05), 0 14px 40px -22px rgba(33,27,23,0.35);
+    border:1px solid var(--rule-soft);
+    border-radius:1px;
+  }
+  /* spazio tra i fogli: ritmo verticale arioso */
+  body > section + section,
+  body > section + article,
+  body > article + article,
+  body > article + section{ margin-top:40px; }
+
+  /* il frontespizio resta full-bleed scuro, centrato come gli altri ma
+     senza cornice chiara: è una pagina a sé */
+  body > section.cover{
+    max-width:860px; padding:0; border:0; box-shadow:0 18px 50px -20px rgba(11,10,10,0.6);
+    width:auto; height:auto; aspect-ratio:210 / 297;
+  }
+  .cover .blade{ height:62%; }
+
+  /* running header/footer di schermo: ancorati alla pagina, MAI al bordo.
+     Riproducono il cartiglio del PDF (@top-right / @bottom-*) ma con inset. */
+  body > section:not(.cover),
+  body > article{ position:relative; }
+  body > section:not(.cover)::before,
+  body > article::before{
+    content:"Matteo Proietti · MMXXVI";
+    position:absolute; top:9px; right:clamp(22px,4.4vw,64px);
+    font-family:var(--font-mono); font-size:7.6px; letter-spacing:0.16em;
+    text-transform:uppercase; color:var(--breath-haze); pointer-events:none;
+  }
+  body > section:not(.cover)::after,
+  body > article::after{
+    content:"L'attesa del coltello · Sala I";
+    position:absolute; bottom:11px; left:clamp(22px,4.4vw,64px);
+    font-family:var(--font-mono); font-size:7.4px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--text-faint); pointer-events:none;
+  }
 }
 
 /* grana statica strutturale (residuo del denoise mai concluso) — leggerissima.
@@ -208,7 +270,7 @@ a{ color:inherit; text-decoration:none; }
 /* ====================================================================
    Intestazioni di sezione
    ==================================================================== */
-.sec-head{ margin-bottom:9mm; }
+.sec-head{ margin-bottom:11mm; }
 .sec-num{
   font-family:var(--font-mono); font-size:var(--step--1);
   letter-spacing:0.28em; color:var(--held-red); text-transform:uppercase;
@@ -289,7 +351,7 @@ a{ color:inherit; text-decoration:none; }
 .opera{ break-before:page; break-inside:avoid; position:relative; z-index:1; }
 .opera-head{
   display:flex; align-items:baseline; gap:6mm;
-  border-bottom:1px solid var(--ink-pelt); padding-bottom:4mm; margin-bottom:6mm;
+  border-bottom:1px solid var(--ink-pelt); padding-bottom:4.5mm; margin-bottom:7mm;
 }
 .opera-no{
   font-family:var(--font-mono); font-weight:500; font-size:var(--step-3);
@@ -477,6 +539,50 @@ a{ color:inherit; text-decoration:none; }
 .prompt-plate .pfoot{
   margin-top:7mm; font-family:var(--font-mono); font-size:6.8pt; letter-spacing:0.14em;
   text-transform:uppercase; color:var(--breath-grey); position:relative; z-index:1;
+}
+
+/* op12 — L'ultima riga: tavola tipografica (lastra scura, sul modello op10).
+   Il verso si scrive e si ferma UN CARATTERE prima della fine. */
+.verse-plate{
+  background:var(--ink-void); color:var(--bone); border:1px solid var(--ink-pelt);
+  padding:9mm 9mm; min-height:122mm; position:relative; overflow:hidden;
+  display:flex; flex-direction:column;
+}
+.verse-plate::after{
+  content:""; position:absolute; inset:0; pointer-events:none; mix-blend-mode:overlay; opacity:0.5;
+  background-image:url("img/grain_light.png"); background-size:200px 200px;
+}
+.verse-plate .vtag{
+  font-family:var(--font-mono); font-size:8pt; letter-spacing:0.22em; text-transform:uppercase;
+  color:var(--held-red); margin-bottom:7mm; position:relative; z-index:1;
+}
+.verse-plate .vstream{
+  position:relative; z-index:1; margin:auto 0;
+  font-family:var(--font-display); font-weight:300; font-style:italic;
+  font-size:15pt; line-height:1.62; color:var(--bone-raw); letter-spacing:-0.005em;
+}
+.verse-plate .vstream .vline{ display:block; margin-bottom:3.2mm; }
+.verse-plate .vstream .vline:last-child{ margin-bottom:0; }
+/* il verso che si arresta: il carattere finale manca, poi il cursore d'arresto */
+.verse-plate .vstream .arrest{ position:relative; }
+.verse-plate .vstream .arrest .gap{
+  display:inline-block; width:0.34em; border-bottom:1px solid var(--breath-grey);
+  margin:0 0.02em -0.04em 0.04em; opacity:0.6;
+}
+.verse-plate .vstream .arrest .caret{
+  display:inline-block; width:1px; height:1.06em; vertical-align:-0.18em;
+  background:var(--held-red); margin-left:0.06em;
+}
+.verse-plate .vmeta{
+  position:relative; z-index:1; margin-top:7mm;
+  font-family:var(--font-mono); font-size:7pt; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--breath-haze); line-height:1.8;
+}
+.verse-plate .vfoot{
+  position:relative; z-index:1; margin-top:5mm; padding-top:4mm;
+  border-top:1px solid var(--pelt-edge);
+  font-family:var(--font-mono); font-size:6.8pt; letter-spacing:0.14em;
+  text-transform:uppercase; color:var(--breath-grey);
 }
 
 /* riga full-width sotto la griglia per il testo di parete lungo */
