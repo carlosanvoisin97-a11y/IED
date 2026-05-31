@@ -23,3 +23,4 @@ Spec di riferimento: `CONCEPT.md`. Budget: vedi `SPESE.md` (tetti rigidi).
 - 2026-05-31: Wave 1/A COMPLETATO — testi committati. Nome: Matteo Proietti. (SiteID + Pilot in corso)
 - 2026-05-31: Wave 1/Pilot COMPLETATO — pipeline Stability OK (curl+UA), 8 cr usati. Serve SD3 Medium + post-processing per il look «arrestato» (recipe in DECISIONI.md). (SiteID in corso)
 - 2026-05-31: Wave 1/SiteID COMPLETATO — identità (palette osso/fiato/rosso-trattenuto; Fraunces+Newsreader+IBM Plex Mono) + scaffold sito Vite+Three.js (shader denoise arrestato a 0.62, fallback/a11y, 10 opere in data/opere.js). WAVE 1 COMPLETA → lancio Wave 2.
+- 2026-05-31: Wave 2/M (opere vive) COMPLETATO — op7 interpolate (morph 0.12-0.88, mai risolto), op9 respiro (14/min + 35,9 Hz), op2 lamento (7 note mai melodia) + sussurro ElevenLabs (51 cr). Integrazione → site/src/INTEGRATION-wave2.md. (immagini B in corso)
