@@ -18,7 +18,7 @@ const KEY = 'intro-v1';
 const PAROLE = ['Il taglio.', 'Il prima.', 'L’attesa.'];
 const WORD_MS = 1400;   // permanenza di ciascuna parola
 const FADE_MS = 520;    // (fallback) dissolvenza finale dell'overlay
-const PART_MS = 1100;   // apertura delle due ante: l'ingresso «nella sala»
+const PART_MS = 2300;   // apertura lenta e teatrale delle due ante: l'ingresso «nella sala»
 
 export function initIntro() {
   // skip: reduced-motion, già vista in questa sessione, o ambiente senza sessionStorage
