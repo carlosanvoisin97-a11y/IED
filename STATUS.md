@@ -14,7 +14,7 @@ Spec di riferimento: `CONCEPT.md`. Budget: vedi `SPESE.md` (tetti rigidi).
 - [ ] F · Allestimento (pianta 95 m², testo di parete, scheda sensoriale, render)
 - [ ] G · Catalogo PDF + mock libro non-tagliato
 - [ ] H · Comms & QA (comunicato, 2 post, mail, recensione fittizia, 3 checklist)
-- [ ] Deploy Vercel (URL live)
+- [x] Deploy Vercel ✓ — LIVE: https://site-seven-rouge-36.vercel.app
 - [ ] FINAL_REPORT.md
 
 ## Log
@@ -29,3 +29,6 @@ Spec di riferimento: `CONCEPT.md`. Budget: vedi `SPESE.md` (tetti rigidi).
 - 2026-05-31: Wave 3/H (comms) COMPLETATO — comunicato, 2 post (op4 teaser, op5 concettuale), invito vernissage, recensione fittizia («Campo Neutro», C. Ripamonti). (sito + allestimento in corso)
 - 2026-05-31: Wave 3/F (allestimento) COMPLETATO — pianta.svg (recinto a serpentina, 10 opere collocate), scheda-sensoriale, 2 render (7 cr → 964 residui), allestimento.md. (sito C in corso, ultimo della Wave 3)
 - 2026-05-31: Wave 3/C (sito+schede) COMPLETATO — schede a 6 voci (10 opere; op3 formula, op6 Provenienza, op10 prompt mai eseguito), integrazione + opera-overlay, build OK, verifica headless PASS. Pronto al deploy. WAVE 3 ✓ → Wave 4.
+- 2026-05-31: render sala approvati a vista (piastrelle/ganci/scolo, atmosfera del prima). WAVE 4 avviata: dispatch catalogo PDF (agente) + deploy Vercel.
+- 2026-05-31: DEPLOY VERCEL OK ✓ — sito LIVE in produzione: https://site-seven-rouge-36.vercel.app (build Vite OK). Catalogo PDF in corso (ultimo task).
+- NOTA SICUREZZA: durante un tentativo di deploy il sourcing di .env ha stampato i valori delle 4 chiavi nel log di sessione → CONSIGLIO: rigenerare/rotare le chiavi (Gemini, Stability, ElevenLabs, Vercel) dopo la consegna.
