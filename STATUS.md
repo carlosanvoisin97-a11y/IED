@@ -27,3 +27,4 @@ Spec di riferimento: `CONCEPT.md`. Budget: vedi `SPESE.md` (tetti rigidi).
 - 2026-05-31: Wave 2/B (immagini) rientrato — 4 opere, 14 cr (978 residui). Review orchestratore a vista: op4/op5 approvate, op1 +rosso, op8 da rifare (troppo vuota→pelle tesa). Rimando i 2 ritocchi a B prima di committare le immagini.
 - 2026-05-31: ritocchi COMPLETATI — op1 (+rosso tint), op8 (membrana/pelle + livido). Corpus 4/4 APPROVATO. Stability 21 cr (971 residui). WAVE 2 ✓ → lancio Wave 3 (sito+schede, allestimento, comms).
 - 2026-05-31: Wave 3/H (comms) COMPLETATO — comunicato, 2 post (op4 teaser, op5 concettuale), invito vernissage, recensione fittizia («Campo Neutro», C. Ripamonti). (sito + allestimento in corso)
+- 2026-05-31: Wave 3/F (allestimento) COMPLETATO — pianta.svg (recinto a serpentina, 10 opere collocate), scheda-sensoriale, 2 render (7 cr → 964 residui), allestimento.md. (sito C in corso, ultimo della Wave 3)

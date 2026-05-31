@@ -1,7 +1,7 @@
 # SPESE & BUDGET — tetti rigidi (non sforare MAI)
 | Servizio | Usato | Tetto |
 |---|---|---|
-| Stability (crediti) | 8 | 900 |
+| Stability (crediti) | ~36 (964/1000 residui) | 900 |
 | Nano Banana Pro / Gemini (generazioni) | 0 | 40 |
 | ElevenLabs (crediti) | 51 | 9000 |
 | Spesa stimata (€) | 0 | ~20 |
