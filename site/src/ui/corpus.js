@@ -1,5 +1,5 @@
 /* =============================================================================
-   CORPUS — costruisce la griglia delle 10 opere dal dato (data/opere.js)
+   CORPUS — costruisce la griglia delle 12 opere dal dato (data/opere.js)
    Ogni scheda è un cartiglio da catalogo. Il "verso sepolto" (CONCEPT §6.5) è
    messo in attributo data-verso E reso visibile solo all'hover/focus (vedi CSS),
    non in chiaro come decorazione. La nomenclatura resta al grado incompiuto.

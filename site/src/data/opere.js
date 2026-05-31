@@ -1,5 +1,5 @@
 /* =============================================================================
-   CORPUS — le 10 opere (CONCEPT.md §7)
+   CORPUS — le 12 opere (CONCEPT.md §7 + Wave 5: op11 Calco del fiato, op12 L'ultima riga)
    Fonte autorevole dei testi: /output/testi/ (testi-di-parete, versi-abbandonati)
    e /output/schede.md (scheda a 6 voci). Apparato curatoriale impeccabile attorno
    a opere che rifiutano di finire.
@@ -9,7 +9,8 @@
      plate                                  — immagine del provino arrestato
                                               (null → rumore generato a runtime)
      live                                   — 'interpolate' | 'respiro' | 'lamento'
-                                              (opera viva: scena WebGL o audio)
+                                              | 'ultimariga' (opera viva: scena
+                                              WebGL, audio, o testo generativo)
      anno, tecnica, dimensioni, didascalia  — voci della scheda a 6 voci
      testoParete                            — testo di parete definitivo
      verso                                  — frammento del verso sepolto (§6.5)
@@ -128,7 +129,7 @@ export const opere = [
     didascalia:
       'Matteo Proietti, «Provenienza (l’archivio di ciò che non ho terminato)», 2024–2026. Archivio-installazione: prompt, seed, provini, versi. Dimensioni variabili.',
     testoParete:
-      'Cartigli, prompt lasciati a bozza, sequenze di seed, frammenti di versi mai conclusi. Questo archivio tiene insieme la sala come una teca tiene insieme delle reliquie. Non documenta opere finite: documenta il punto esatto in cui ciascuna è stata fermata. È la prova — rigorosa, datata, ordinata — di una sola decisione ripetuta dieci volte: non arrivare alla fine. Sotto ogni immagine della sala c’è un foglio nascosto qui dentro. La materia umana, conservata sotto la superficie.',
+      'Cartigli, prompt lasciati a bozza, sequenze di seed, frammenti di versi mai conclusi. Questo archivio tiene insieme la sala come una teca tiene insieme delle reliquie. Non documenta opere finite: documenta il punto esatto in cui ciascuna è stata fermata. È la prova — rigorosa, datata, ordinata — di una sola decisione ripetuta a ogni opera: non arrivare alla fine. Sotto ogni immagine della sala c’è un foglio nascosto qui dentro. La materia umana, conservata sotto la superficie.',
     verso: 'tutto ciò che non è ancora stato tagliato',
   },
   {
@@ -205,6 +206,42 @@ export const opere = [
     testoParete:
       'Una sola istruzione, stampata e appesa. Descrive per intero un’opera — la più compiuta della sala — e non è mai stata data alla macchina. Resta parola, intenzione, possibilità: l’unica opera che non potrà mai essere giudicata perché non è mai stata fatta. Una cosa così esatta che nessuno potesse rifarla uguale. Proietti l’ha scritta e si è fermato sul punto. Il coltello è qui completamente alzato, e la mano non lo lascerà cadere.',
     verso: 'l’ordine c’è. L’ho lasciato non eseguito.',
+  },
+  {
+    no: '11',
+    titolo: 'Calco del fiato',
+    medium: 'immagine · diffusione interrotta',
+    stato: 'passo 11/50',
+    seed: 'seed 359 · passo 11/50',
+    // il file arriva da un altro processo; finché manca, plate.js genera il rumore a runtime
+    plate: '/opere/op11-calco-del-fiato.webp',
+    anno: '2026',
+    tecnica:
+      'diffusione interrotta (SD3.5 Medium, seed 359, passo ~11/50) + post-processing d’arresto; il calco di un respiro sul vetro freddo, fermato prima che la condensa si chiuda in forma; stampa pigmentata su cotone, ed. di 3',
+    dimensioni: '73 × 107 cm · stampa pigmentata su cotone · ed. 1/3',
+    didascalia:
+      'Matteo Proietti, «Calco del fiato», 2026. Diffusione interrotta al passo 11 di 50, stampa pigmentata su cotone, 73 × 107 cm. Ed. 1/3.',
+    testoParete:
+      'Un fiato ha appena toccato una superficie fredda e vi ha lasciato un alone. La diffusione lo porta verso una forma — un volto, una mano, forse solo una nuvola di calore — e si arresta all’undicesimo passo, prima che la condensa si chiuda in qualcosa di riconoscibile. È il calore di un corpo registrato senza il corpo: la prova che qualcuno era qui, un istante fa, e respirava. Proietti ferma l’immagine dove è ancora soltanto traccia. Più avanti sarebbe diventata un’identità, e quindi qualcosa da giudicare. Qui resta fiato: tiepido, anonimo, già quasi svanito.',
+    verso: 'ho lasciato il mio caldo sul vetro, e niente nome',
+  },
+  {
+    no: '12',
+    titolo: 'L’ultima riga',
+    medium: 'testo generativo · si ferma un carattere prima',
+    stato: 'mai conclusa',
+    seed: 'lerp · un carattere',
+    plate: null,
+    live: 'ultimariga',
+    anno: '2026',
+    tecnica:
+      'testo generativo in tempo reale (codice nativo, nessun modello a runtime): un verso si scrive carattere per carattere e si arresta sull’ultimo, poi ricomincia. La frase conosce la propria fine e non la raggiunge mai — l’arresto reso linguaggio',
+    dimensioni: 'opera testuale generativa, durata indefinita · schermo o proiezione, dimensioni variabili',
+    didascalia:
+      'Matteo Proietti, «L’ultima riga», 2026. Testo generativo in tempo reale, durata indefinita, dimensioni variabili.',
+    testoParete:
+      'Una riga di poesia si scrive da sola, lettera dopo lettera, alla velocità di chi la pensa mentre la batte. Arriva fino in fondo e si ferma un carattere prima dell’ultimo: la parola resta aperta, la frase non si chiude. Poi cancella tutto e ricomincia. È il gesto del poeta che ha smesso di finire, fatto verbo: la mano sa esattamente quale segno manca, e si trattiene dal porlo. Quel carattere mancante è la distanza tra ciò che si sente e ciò che resta sulla riga — un millimetro, forse meno. La riga non sarà mai l’ultima, perché non finisce.',
+    verso: 'la distanza tra quello che sento e quello che resta sulla riga',
   },
 ];
 

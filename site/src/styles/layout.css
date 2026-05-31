@@ -91,9 +91,20 @@
 .hero__kicker {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-s) var(--space-m);
+  gap: var(--space-2xs) var(--space-m);
   align-items: baseline;
-  margin-bottom: var(--space-m);
+  margin-bottom: var(--space-l);
+}
+/* fini separatori tra le voci del kicker: linee del recinto, ritmo da cartiglio */
+.hero__kicker .meta { position: relative; }
+.hero__kicker .meta + .meta { padding-left: var(--space-m); }
+.hero__kicker .meta + .meta::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--space-m) / -2);
+  top: 0.1em; bottom: 0.1em;
+  width: 1px;
+  background: color-mix(in oklab, var(--ink-pelt) 90%, transparent);
 }
 
 .hero__title {
@@ -104,10 +115,60 @@
 }
 
 .hero__lede {
-  margin-top: var(--space-m);
+  margin-top: var(--space-l);
   color: var(--breath-haze);
   font-size: var(--step-1);
-  max-width: 52ch;
+  line-height: 1.62;       /* più aria: lettura lenta, da museo */
+  max-width: 48ch;         /* misura più stretta: ritmo più editoriale */
+}
+.hero__lede em {
+  font-style: italic;
+  color: var(--bone);      /* "arresta": appena più presente, senza colore */
+  font-feature-settings: 'ital' 1;
+}
+
+/* la riga-soglia in fondo all'hero: il cue di scorrimento, sospeso (pulsa piano) */
+.hero__cue {
+  margin-top: var(--space-l);
+  color: var(--breath-grey);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+.hero__cue::before {
+  content: '↓';
+  display: inline-block;
+  animation: cue-drift var(--dur-breath) var(--ease-breath) infinite;
+}
+@keyframes cue-drift {
+  0%, 100% { transform: translateY(0); opacity: 0.55; }
+  50%      { transform: translateY(3px); opacity: 0.9; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__cue::before { animation: none; opacity: 0.7; }
+}
+
+/* --- INGRESSO d'apertura dell'hero (un solo load orchestrato, a stagger) ----
+   opacity + translateY + sfocatura che si dissolve; si ferma trattenuto (mai 1),
+   coerente con la Legge 2 (non-risoluzione). Spento con reduced-motion. */
+.hero__kicker,
+.hero__title,
+.hero__lede,
+.hero__cue {
+  animation: hero-rise var(--dur-enter) var(--ease-out) both;
+}
+.hero__kicker { animation-delay: 0.15s; }
+.hero__title  { animation-delay: 0.28s; }
+.hero__lede   { animation-delay: 0.46s; }
+.hero__cue    { animation-delay: 0.62s; }
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(12px); filter: blur(6px); }
+  to   { opacity: 0.97; transform: translateY(0); filter: blur(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__kicker, .hero__title, .hero__lede, .hero__cue {
+    animation: none; opacity: 1; transform: none; filter: none;
+  }
 }
 
 /* indicatore climatico: la firma "≈ 35,9°C" in un angolo */
@@ -137,7 +198,7 @@
   .climate__dot { animation: none; opacity: 0.5; }
 }
 
-/* --- SEZIONE CORPUS (griglia 10 opere) ------------------------------------ */
+/* --- SEZIONE CORPUS (griglia 12 opere) ------------------------------------ */
 .corpus {
   position: relative;
   z-index: var(--z-content);
@@ -307,6 +368,34 @@
   .cursor { display: none; }
 }
 
+/* --- ALONE del cursore: luce larga, quasi incolore, trattenuta --------------
+   ~320×200px. Solo un lievissimo schiarimento + una traccia minima di rosso
+   trattenuto (mai un blob caldo/arancione). Sta sopra la scena ma sotto il
+   contenuto, in screen, così alza appena il fondo senza lavare il testo. */
+.cursor-glow {
+  position: fixed;
+  top: 0; left: 0;
+  width: 320px; height: 200px;
+  margin: -100px 0 0 -160px;       /* centrato sul puntatore */
+  z-index: 1;                       /* tra --z-scene (0) e --z-content (10) */
+  pointer-events: none;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  opacity: 0.5;                     /* il gradiente è già quasi nulla: questo lo tiene minimo */
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(217, 207, 194, 0.05) 0%,   /* osso: schiarimento appena percepibile */
+    rgba(122, 46, 38, 0.035) 42%,   /* rosso trattenuto, a opacità minima */
+    transparent 72%
+  );
+  transition: opacity var(--dur-ui) var(--ease-out);
+  will-change: transform;
+}
+.cursor-glow.is-hidden { opacity: 0; }
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .cursor-glow { display: none; }
+}
+
 /* --- responsive ----------------------------------------------------------- */
 @media (max-width: 640px) {
   .climate { right: var(--space-m); top: auto; bottom: var(--space-m); }
@@ -433,12 +522,76 @@ html.overlay-lock body { overflow: hidden; }
   overflow: hidden;
 }
 .opera__canvas { display: block; width: 100%; height: 100%; }
+/* op07 — video Veo (se presente): riempie la stessa cornice 3:4 del canvas */
+.opera__video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: contrast(0.98); /* nessuna "finitura" lucida, come le immagini arrestate */
+}
 .opera__fallback {
   position: absolute; inset: 0;
   display: none;
   background:
     var(--warmth-core),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+/* op12 — "L'ultima riga": testo generativo che si arresta un char prima.
+   Un cartiglio scuro in cui il verso si scrive e non si chiude mai. */
+.opera__text-live {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-l);
+  background: var(--ink-void);
+  background-image: var(--warmth-core);
+  border: var(--border-pen);
+  border-radius: var(--radius);
+}
+.ultimariga {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  width: 100%;
+  max-width: 42ch;
+}
+.ultimariga .meta { color: var(--breath-grey); }
+.ultimariga__line {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 340;
+  font-size: var(--step-2);
+  line-height: 1.5;
+  color: var(--bone);
+  max-width: none;
+  min-height: 4.5em;       /* spazio stabile: la riga non fa "saltare" il layout */
+}
+.ultimariga__text { white-space: pre-wrap; }
+/* il cursore della macchina da scrivere: un trattino d'osso che pulsa lento */
+.ultimariga__caret {
+  display: inline-block;
+  width: 0.5ch;
+  margin-left: 0.04em;
+  border-bottom: 2px solid var(--held-red);
+  vertical-align: baseline;
+  animation: caret-hold 1.15s steps(1) infinite;
+}
+@keyframes caret-hold {
+  0%, 60%  { opacity: 0.85; }
+  61%,100% { opacity: 0;    }
+}
+/* all'arresto (manca l'ultimo carattere) il cursore si ferma acceso e il rosso
+   trattenuto affiora appena: la frase tenuta aperta di un segno */
+.ultimariga.is-arrested .ultimariga__caret { animation: none; opacity: 0.9; }
+.ultimariga.is-arrested .ultimariga__text { color: var(--bone-raw); }
+.ultimariga.is-static .ultimariga__caret { animation: none; opacity: 0.9; }
+@media (prefers-reduced-motion: reduce) {
+  .ultimariga__caret { animation: none; opacity: 0.9; }
 }
 
 .opera__stage-state { padding-top: var(--space-2xs); }

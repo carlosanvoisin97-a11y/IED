@@ -90,7 +90,7 @@ a:hover { color: var(--bone-raw); border-color: var(--held-red); }
   pointer-events: none;
   opacity: var(--grain-opacity);
   mix-blend-mode: var(--grain-blend);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 160px 160px;
   /* la grana "respira" pianissimo: deriva lenta, mai un loop riconoscibile */
   animation: grain-drift var(--dur-drift) steps(6) infinite;
@@ -105,9 +105,47 @@ a:hover { color: var(--bone-raw); border-color: var(--held-red); }
   100% { transform: translate(0, 0); }
 }
 
+/* reduced-motion: la grana viva si SPEGNE del tutto (identità §4 Legge 3) */
 @media (prefers-reduced-motion: reduce) {
-  .grain { animation: none; }
+  .grain { animation: none; display: none; }
 }
+
+/* --- INTRO LOADER: il loader a parole (palette fredda, nessun alone caldo) -- */
+/* full-screen #0d0d0b; tre parole in serif sottile, osso; uscita silenziosa.   */
+html.intro-lock, html.intro-lock body { overflow: hidden; }
+
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 200;                 /* sopra tutto, anche il cursore (--z-cursor 100) */
+  display: grid;
+  place-items: center;
+  background: #0d0d0b;          /* fondo del loader (palette fredda, mai #000) */
+  cursor: default;
+  opacity: 1;
+  transition: opacity 520ms cubic-bezier(0.37, 0, 0.63, 1);
+}
+.intro.is-closing { opacity: 0; pointer-events: none; }
+
+.intro__word {
+  font-family: var(--font-display);
+  font-weight: 300;             /* serif sottile */
+  font-style: italic;
+  font-size: clamp(2rem, 6vw, 4rem);
+  letter-spacing: var(--track-display);
+  color: #e8e0d0;               /* osso */
+  /* stato di riposo: appena giù e trasparente (la parola "arriva") */
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 560ms var(--ease-out),
+    transform 560ms var(--ease-out);
+  will-change: opacity, transform;
+}
+/* entrata: si posa e si accende (mai a 1 pieno: resta trattenuta) */
+.intro__word.is-in { opacity: 0.94; transform: translateY(0); }
+/* attenuazione prima della parola successiva (morbida, non un'uscita rumorosa) */
+.intro__word.is-out { opacity: 0; transform: translateY(-6px); }
 
 /* --- Utility -------------------------------------------------------------- */
 .visually-hidden {

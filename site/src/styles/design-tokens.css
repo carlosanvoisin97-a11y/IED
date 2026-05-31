@@ -29,7 +29,7 @@
   );
 
   /* --- GRANA DI DIFFUSIONE (residuo del denoise mai completato) ------------- */
-  --grain-opacity: 0.06; /* overlay film statico su tutta la pagina */
+  --grain-opacity: 0.08; /* overlay film statico su tutta la pagina */
   --grain-blend: overlay;
 
   /* --- TIPOGRAFIA: famiglie ------------------------------------------------- */
@@ -98,6 +98,7 @@
    Resta tutto leggibile (i valori statici sotto vengono usati dal JS/CSS). */
 @media (prefers-reduced-motion: reduce) {
   :root {
-    --grain-opacity: 0.045;
+    /* la grana viva si spegne (vedi base.css: .grain display:none) */
+    --grain-opacity: 0;
   }
 }

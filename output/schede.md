@@ -4,7 +4,7 @@
 **Sala I** · ex Mattatoio di Testaccio, La Pelanda · IED Roma · *Prompt Thinking MMXXVI* (Andrea Colamedici)
 **Mostra:** 14 nov 2026 – 28 feb 2027
 
-> Apparato curatoriale a sei voci per ciascuna delle dieci opere (CONCEPT.md §7).
+> Apparato curatoriale a sei voci per ciascuna delle dodici opere (CONCEPT.md §7; op11–12 aggiunte in Wave 5).
 > Voci: **Titolo · Anno · Tecnica · Dimensioni · Didascalia · Testo di parete.**
 > La «Tecnica» rende leggibile l'arresto: il punto esatto in cui la macchina è stata
 > fermata. Il «Testo di parete» è quello definitivo (`testi-di-parete.md`, voce del
@@ -166,3 +166,27 @@
 
 - **Testo di parete:**
   Una sola istruzione, stampata e appesa. Descrive per intero un'opera — la più compiuta della sala — e non è mai stata data alla macchina. Resta parola, intenzione, possibilità: l'unica opera che non potrà mai essere giudicata perché non è mai stata fatta. *Una cosa così esatta che nessuno potesse rifarla uguale.* Proietti l'ha scritta e si è fermato sul punto. Il coltello è qui completamente alzato, e la mano non lo lascerà cadere.
+
+---
+
+## 11 · Calco del fiato
+
+- **Titolo:** *Calco del fiato*
+- **Anno:** 2026
+- **Tecnica:** diffusione interrotta (SD3.5 Medium, seed 359, passo ~11/50) + post-processing d'arresto (gradient-map alla palette d'osso, rosso trattenuto in modalità *tint*, campo di rumore fuso alla figura). Il calco di un respiro su una superficie fredda, fermato prima che la condensa si chiuda in forma riconoscibile; stampa pigmentata su cotone, ed. di 3 + 1 P.A.
+- **Dimensioni:** 73 × 107 cm (immagine); 84 × 118 cm (con margine). File sorgente 1095 × 1600 px.
+- **Didascalia:** Matteo Proietti, *Calco del fiato*, 2026. Diffusione interrotta al passo 11 di 50, stampa pigmentata su cotone, 73 × 107 cm. Ed. 1/3. Verso sepolto: *«ho lasciato il mio caldo sul vetro, e niente nome.»*
+- **Testo di parete:**
+  Un fiato ha appena toccato una superficie fredda e vi ha lasciato un alone. La diffusione lo porta verso una forma — un volto, una mano, forse solo una nuvola di calore — e si arresta all'undicesimo passo, prima che la condensa si chiuda in qualcosa di riconoscibile. È il calore di un corpo registrato senza il corpo: la prova che qualcuno era qui, un istante fa, e respirava. Proietti ferma l'immagine dove è ancora soltanto traccia. Più avanti sarebbe diventata un'identità, e quindi qualcosa da giudicare. Qui resta fiato: tiepido, anonimo, già quasi svanito.
+
+---
+
+## 12 · L'ultima riga
+
+- **Titolo:** *L'ultima riga*
+- **Anno:** 2026
+- **Tecnica:** testo generativo in tempo reale (codice nativo, nessun modello a runtime): un verso si scrive carattere per carattere e si arresta sull'ultimo, poi cancella e ricomincia con una variante. La frase conosce la propria fine e non la raggiunge mai — l'arresto prima della risoluzione reso linguaggio. I versi sono varianti di un solo frammento abbandonato (*versi-abbandonati* III — la misura).
+- **Dimensioni:** opera testuale generativa, durata indefinita; schermo o proiezione, dimensioni variabili. (Nel microsito: cartiglio scuro nella scheda dell'opera.)
+- **Didascalia:** Matteo Proietti, *L'ultima riga*, 2026. Testo generativo in tempo reale, durata indefinita, dimensioni variabili. Verso sepolto: *«la distanza tra quello che sento e quello che resta sulla riga.»*
+- **Testo di parete:**
+  Una riga di poesia si scrive da sola, lettera dopo lettera, alla velocità di chi la pensa mentre la batte. Arriva fino in fondo e si ferma un carattere prima dell'ultimo: la parola resta aperta, la frase non si chiude. Poi cancella tutto e ricomincia. È il gesto del poeta che ha smesso di finire, fatto verbo: la mano sa esattamente quale segno manca, e si trattiene dal porlo. Quel carattere mancante è la distanza tra ciò che si sente e ciò che resta sulla riga — *un millimetro, forse meno.* La riga non sarà mai l'ultima, perché non finisce.

@@ -14,8 +14,13 @@ import { renderCorpus } from './ui/corpus.js';
 import { initReveal } from './ui/reveal.js';
 import { initCursor } from './ui/cursor.js';
 import { initOperaOverlay } from './ui/opera-overlay.js';
+import { initIntro } from './ui/intro.js';
 
 function boot() {
+  // 0. loader a parole («Il taglio. / Il prima. / L'attesa.»): una volta per
+  //    sessione, salta con reduced-motion. Atmosferico, non blocca il DOM sotto.
+  initIntro();
+
   // 1. scena 3D della home: il denoise sospeso
   const canvas = document.getElementById('scene-denoise');
   const fallback = document.querySelector('.scene-fallback');
@@ -29,7 +34,7 @@ function boot() {
   //    così la griglia può agganciare l'apertura.
   const overlay = initOperaOverlay(document);
 
-  // 3. griglia delle 10 opere (dal dato); ogni scheda apre l'overlay
+  // 3. griglia delle 12 opere (dal dato); ogni scheda apre l'overlay
   const corpusMount = document.getElementById('corpus-grid');
   renderCorpus(corpusMount, (op, cardEl) => overlay.openOpera(op, cardEl));
 

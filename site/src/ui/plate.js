@@ -22,24 +22,36 @@ export function createPlate(opera) {
   wrap.setAttribute('aria-hidden', 'true');
 
   if (opera.plate) {
-    // asset reale disponibile: immagine del denoise a step basso
+    // asset reale dichiarato: proviamo l'immagine del denoise a step basso.
+    // Se il file NON c'è ancora (o il server risponde con HTML al posto
+    // dell'immagine), `onerror` scatta e si ricade sul rumore runtime — così
+    // un plate dichiarato ma mancante non lascia mai un'immagine rotta.
     const img = document.createElement('img');
-    img.src = opera.plate;
     img.alt = '';
     img.loading = 'lazy';
     img.decoding = 'async';
+    img.addEventListener('error', () => {
+      if (img.parentNode === wrap) wrap.removeChild(img);
+      wrap.appendChild(makeNoise(opera));
+    }, { once: true });
+    img.src = opera.plate;
     wrap.appendChild(img);
     return wrap;
   }
 
   // nessun asset → rumore arrestato generato a runtime
+  wrap.appendChild(makeNoise(opera));
+  return wrap;
+}
+
+/** Provino di rumore "arrestato" su canvas (fallback / default). */
+function makeNoise(opera) {
   const canvas = document.createElement('canvas');
   canvas.width = W;
   canvas.height = H;
   const ctx = canvas.getContext('2d');
   if (ctx) drawArrestedNoise(ctx, hashSeed(opera.seed || opera.no));
-  wrap.appendChild(canvas);
-  return wrap;
+  return canvas;
 }
 
 /* --- rumore deterministico (così ogni opera ha il suo provino stabile) ----- */

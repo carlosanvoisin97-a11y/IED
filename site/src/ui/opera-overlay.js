@@ -17,15 +17,39 @@
 
 import { opere, versiAbbandonati, provenienza } from '../data/opere.js';
 import { createInterpolateScene } from '../scenes/interpolate.js';
+import { createUltimaRiga } from '../scenes/ultimariga.js';
 import { createRespiro } from '../audio/respiro.js';
 import { createLamento } from '../audio/lamento.js';
+
+// Gancio video op07: se il file Veo esiste in /opere lo mostriamo come opera
+// (loop, muted, playsinline), con lo shader interpolate come fallback. I file
+// NON sono presenti ora: vanno solo droppati qui e l'overlay li userà.
+const OP07_VIDEO = '/opere/op07-veo.mp4';
+const OP07_POSTER = '/opere/op07-veo-poster.jpg';
 
 const PLATE_ALT = {
   '01': 'Torso emerso a metà dal rumore, né corpo né carcassa.',
   '04': 'Mano che alza un coltello all’apice dell’arco, la lama che non discende.',
   '05': 'Volto che si disfa in grana ai bordi, autoritratto che rifiuta di risolversi.',
   '08': 'Superficie indecisa tra pelle e carta, con un livido di rosso trattenuto.',
+  '11': 'Alone di un respiro su una superficie fredda, fermato prima di chiudersi in forma.',
 };
+
+/** Verifica non bloccante che un asset esista DAVVERO (HEAD).
+ *  Molti dev/preview server (Vite) rispondono 200 + text/html (SPA fallback)
+ *  ai file mancanti: `r.ok` non basta. Controlliamo che il Content-Type combaci
+ *  col tipo atteso (es. 'video/' o 'image/'); se è html, l'asset è assente. */
+function assetExists(url, typePrefix) {
+  return fetch(url, { method: 'HEAD' })
+    .then((r) => {
+      if (!r.ok) return false;
+      const ct = (r.headers.get('content-type') || '').toLowerCase();
+      if (ct.includes('text/html')) return false;          // SPA fallback → non c'è
+      if (typePrefix && !ct.startsWith(typePrefix)) return false; // tipo sbagliato
+      return true;
+    })
+    .catch(() => false);
+}
 
 export function initOperaOverlay(root = document) {
   // --- struttura dell'overlay (una sola istanza, riusata) ------------------
@@ -52,10 +76,12 @@ export function initOperaOverlay(root = document) {
   let live = null; // handle del modulo vivo attivo (per il cleanup)
   let lastFocus = null; // elemento a cui restituire il focus alla chiusura
   let isOpen = false;
+  let openToken = 0; // invalida i controlli asincroni (es. HEAD del video) al cambio opera
 
   // --- apertura -------------------------------------------------------------
   function openOpera(op, triggerEl) {
     if (!op) return;
+    openToken += 1; // invalida eventuali HEAD/async della precedente apertura
     closeLive(); // igiene: mai due moduli vivi insieme
     lastFocus = triggerEl || document.activeElement;
 
@@ -78,6 +104,7 @@ export function initOperaOverlay(root = document) {
   // --- chiusura -------------------------------------------------------------
   function closeOpera() {
     if (!isOpen) return;
+    openToken += 1; // invalida eventuali HEAD/async ancora in volo
     closeLive();
     backdrop.classList.remove('is-open');
     backdrop.setAttribute('aria-hidden', 'true');
@@ -101,19 +128,68 @@ export function initOperaOverlay(root = document) {
      IL LAVORO (stage) — varia per tipo di opera
      ========================================================================= */
   function renderStage(op, mount) {
-    // op07 — interpolazione: canvas WebGL vivo (parte da solo, non risolve)
+    // op07 — interpolazione. Gancio video Veo: SE /opere/op07-veo.mp4 esiste,
+    // mostriamo il VIDEO come opera (loop, muted, playsinline); ALTRIMENTI lo
+    // shader interpolate (canvas WebGL vivo, mai risolto). Stessa cornice 3:4.
     if (op.live === 'interpolate') {
       const frame = el('div', 'opera__canvas-wrap');
-      const canvas = document.createElement('canvas');
-      canvas.className = 'opera__canvas';
-      canvas.setAttribute('aria-hidden', 'true');
-      const fb = el('div', 'opera__fallback');
-      fb.setAttribute('aria-hidden', 'true');
-      frame.append(canvas, fb);
       mount.appendChild(frame);
-      mount.appendChild(stateLine('interpolazione latente · loop non risolto'));
-      // monta la scena (parte da sola; pausa/cleanup gestiti dal modulo)
-      live = createInterpolateScene(canvas, fb);
+      const state = stateLine('interpolazione latente · loop non risolto');
+      mount.appendChild(state);
+
+      // token d'apertura: se l'utente chiude prima che l'HEAD risponda, non
+      // montiamo nulla nel frattempo.
+      const token = ++openToken;
+
+      // monta lo shader interpolate (fallback): canvas + poster di grana
+      const mountShader = () => {
+        if (token !== openToken) return;
+        closeLive();
+        frame.innerHTML = '';
+        const canvas = document.createElement('canvas');
+        canvas.className = 'opera__canvas';
+        canvas.setAttribute('aria-hidden', 'true');
+        const fb = el('div', 'opera__fallback');
+        fb.setAttribute('aria-hidden', 'true');
+        frame.append(canvas, fb);
+        state.querySelector('.meta').textContent = 'interpolazione latente · loop non risolto';
+        // monta la scena (parte da sola; pausa/cleanup gestiti dal modulo)
+        live = createInterpolateScene(canvas, fb);
+      };
+
+      assetExists(OP07_VIDEO, 'video/').then((hasVideo) => {
+        if (token !== openToken) return; // overlay chiuso o riaperto su altra opera
+        if (hasVideo) {
+          const video = document.createElement('video');
+          video.className = 'opera__canvas opera__video';
+          video.src = OP07_VIDEO;
+          video.poster = OP07_POSTER;
+          video.loop = true;
+          video.muted = true;
+          video.defaultMuted = true;
+          video.autoplay = true;
+          video.playsInline = true;
+          video.setAttribute('playsinline', '');
+          video.setAttribute('aria-hidden', 'true');
+          // se il video fallisce comunque (codec/rete), si ricade sullo shader
+          video.addEventListener('error', mountShader, { once: true });
+          frame.appendChild(video);
+          state.querySelector('.meta').textContent = 'video generativo · loop · il verdetto che non si posa';
+          const p = video.play();
+          if (p && typeof p.catch === 'function') p.catch(() => {});
+        } else {
+          mountShader(); // nessun file Veo: lo shader
+        }
+      });
+      return;
+    }
+
+    // op12 — "L'ultima riga": testo generativo che si arresta un char prima
+    if (op.live === 'ultimariga') {
+      const frame = el('div', 'opera__text-live');
+      mount.appendChild(frame);
+      mount.appendChild(stateLine('mai conclusa · un carattere prima della fine'));
+      live = createUltimaRiga(frame);
       return;
     }
 
