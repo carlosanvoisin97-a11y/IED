@@ -44,4 +44,5 @@ Richieste utente (2026-05-31):
 - 2026-05-31: DEPLOY VERCEL OK ✓ — sito LIVE in produzione: https://site-seven-rouge-36.vercel.app (build Vite OK). Catalogo PDF in corso (ultimo task).
 - 2026-05-31: Wave 4/G COMPLETATO — catalogo.pdf 28 pp (HTML/CSS → Chrome headless, font self-hostati embedded, 6 sezioni). WAVE 4 core ✓.
 - 2026-05-31: avvio Wave 5: prep asset (op11 immagine + Veo op7) in corso; agente site-enhancement (loader/grana/glow + hero nuova + polish + op12) lanciato.
+- 2026-05-31: prep Wave 5 COMPLETATO — op11 «Calco del fiato» (3.5 cr) + VIDEO VEO op7 OK (veo-3.1-generate-preview, 8s) approvati a vista. Restano: drop asset nel sito (dopo site-enhancement), rebuild+redeploy, catalogo→12 opere, PR, report finale.
 - NOTA SICUREZZA: durante un tentativo di deploy il sourcing di .env ha stampato i valori delle 4 chiavi nel log di sessione → CONSIGLIO: rigenerare/rotare le chiavi (Gemini, Stability, ElevenLabs, Vercel) dopo la consegna.
