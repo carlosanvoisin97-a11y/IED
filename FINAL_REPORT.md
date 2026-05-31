@@ -4,7 +4,7 @@ Build autonomo completato: 2026-05-31.
 
 ## Output consegnati
 - **Sito live (l'artista esiste):** https://site-seven-rouge-36.vercel.app — mostra interattiva: loader a scritte, home con denoise sospeso, 12 opere con scheda a 6 voci, opere vive (video Veo, interpolazione, respiro, lamento, «L'ultima riga»), archivio Provenienza, grana coerente.
-- **Catalogo d'esame:** `catalogo/catalogo.pdf` — 31 pp, A4, font embedded, autosufficiente, 6 sezioni del brief, margini sistemati.
+- **Catalogo d'esame:** online (HTML) https://catalogo-omega-seven.vercel.app · PDF `catalogo/catalogo.pdf` (31 pp, A4, font embedded, 6 sezioni, margini verificati a vista pagina per pagina).
 - **Pacchetto di consegna:** `CONSEGNA/` + `CONSEGNA.zip` (~18 MB) — PDF, singole immagini, video op7, comunicazione, concept, README (`LEGGIMI.md`), email pronta (`EMAIL-da-inviare.md`).
 - **Repo:** branch `build/attesa-del-coltello`, PR aperta su `main`.
 
