@@ -1,0 +1,201 @@
+/* =============================================================================
+   BASE — reset minimale, tipografia di sistema, atmosfera (grana + calore)
+   ============================================================================= */
+
+/* --- Font da Google Fonts (display + testo + mono) ------------------------ */
+/* In produzione si possono self-hostare in /public/fonts per evitare la
+   dipendenza di rete; per ora import diretto (vedi README del sito). */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=IBM+Plex+Mono:wght@300;400;500&family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..400&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--ink-void);
+  background-image: var(--warmth-core);
+  background-attachment: fixed; /* l'alone di calore resta fermo, non scorre */
+  color: var(--bone);
+  font-family: var(--font-text);
+  font-size: var(--step-0);
+  line-height: var(--leading-air);
+  font-optical-sizing: auto;
+  letter-spacing: 0.005em;
+  overflow-x: hidden;
+  /* cursore di sistema nascosto solo se abilitiamo quello custom (vedi cursor.js) */
+}
+
+/* --- Tipografia di base ---------------------------------------------------- */
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 360;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--track-display);
+  color: var(--bone-raw);
+  font-optical-sizing: auto;
+}
+
+p { max-width: var(--measure); }
+
+a {
+  color: var(--bone);
+  text-decoration: none;
+  border-bottom: 1px solid var(--breath-grey);
+  transition: color var(--dur-ui) var(--ease-out),
+              border-color var(--dur-ui) var(--ease-out);
+}
+a:hover { color: var(--bone-raw); border-color: var(--held-red); }
+
+/* foco da tastiera: lama rossa su sfondo scuro */
+:focus-visible {
+  outline: 2px solid var(--held-red);
+  outline-offset: 3px;
+}
+
+/* --- Etichette / metadati in mono (da inventario) ------------------------- */
+.label,
+.meta {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-weight: 400;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--breath-grey);
+}
+
+.held { color: var(--held-red); }
+.bone { color: var(--bone-raw); }
+
+/* --- Grana di diffusione: overlay film fisso su tutta la pagina ----------- */
+/* SVG fractalNoise inline come data-URI: nessun asset esterno, leggerissimo. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-grain);
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: var(--grain-blend);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  /* la grana "respira" pianissimo: deriva lenta, mai un loop riconoscibile */
+  animation: grain-drift var(--dur-drift) steps(6) infinite;
+}
+
+@keyframes grain-drift {
+  0%   { transform: translate(0, 0); }
+  20%  { transform: translate(-2%, 1%); }
+  40%  { transform: translate(1%, -2%); }
+  60%  { transform: translate(-1%, 2%); }
+  80%  { transform: translate(2%, 1%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* reduced-motion: la grana viva si SPEGNE del tutto (identità §4 Legge 3) */
+@media (prefers-reduced-motion: reduce) {
+  .grain { animation: none; display: none; }
+}
+
+/* --- INTRO LOADER: il loader a parole (palette fredda, nessun alone caldo) -- */
+/* full-screen #0d0d0b; tre parole in serif sottile, osso; uscita silenziosa.   */
+html.intro-lock, html.intro-lock body { overflow: hidden; }
+
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 200;                 /* sopra tutto, anche il cursore (--z-cursor 100) */
+  display: grid;
+  place-items: center;
+  background: transparent;      /* le due ante portano il fondo; aprendosi rivelano la sala */
+  cursor: default;
+  opacity: 1;
+  transition: opacity 520ms cubic-bezier(0.37, 0, 0.63, 1);
+}
+.intro.is-closing { opacity: 0; pointer-events: none; } /* fallback */
+
+/* le due ante della soglia: coprono lo schermo, all'uscita si separano lente */
+.intro__pane {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: calc(50% + 1px);        /* 1px di sovrapposizione: niente filo chiaro al centro */
+  background: #0d0d0b;
+  will-change: transform;
+  /* apertura lenta e teatrale: trattenuta, poi scivola via morbida (ease-in-out) */
+  transition: transform 1900ms cubic-bezier(0.76, 0, 0.24, 1);
+  transition-delay: 200ms;        /* un istante di sospensione prima che si apra */
+}
+.intro__pane--l { left: 0; }
+.intro__pane--r { right: 0; }
+/* la lama: una sottile linea rossa ESATTAMENTE al centro, che si spegne aprendosi
+   (simmetrica — non più un bordo sul pannello destro) */
+.intro::after {
+  content: '';
+  position: absolute;
+  top: 12vh; bottom: 12vh;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(to bottom,
+    transparent, var(--held-red-deep) 18%, var(--breath-grey) 50%, var(--held-red-deep) 82%, transparent);
+  opacity: 0.6;
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 600ms var(--ease-out);
+}
+.intro.is-opening { pointer-events: none; }
+.intro.is-opening::after { opacity: 0; }
+.intro.is-opening .intro__pane--l { transform: translateX(-101%); }
+.intro.is-opening .intro__pane--r { transform: translateX(101%); }
+.intro.is-opening .intro__word { opacity: 0; transition: opacity 460ms var(--ease-out); }
+
+.intro__word {
+  position: relative;
+  z-index: 2;                   /* sopra le ante */
+  font-family: var(--font-display);
+  font-weight: 300;             /* serif sottile */
+  font-style: italic;
+  font-size: clamp(2rem, 6vw, 4rem);
+  letter-spacing: var(--track-display);
+  color: #e8e0d0;               /* osso */
+  /* stato di riposo: appena giù e trasparente (la parola "arriva") */
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 560ms var(--ease-out),
+    transform 560ms var(--ease-out);
+  will-change: opacity, transform;
+}
+/* entrata: si posa e si accende (mai a 1 pieno: resta trattenuta) */
+.intro__word.is-in { opacity: 0.94; transform: translateY(0); }
+/* attenuazione prima della parola successiva (morbida, non un'uscita rumorosa) */
+.intro__word.is-out { opacity: 0; transform: translateY(-6px); }
+
+/* --- Utility -------------------------------------------------------------- */
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.wrap {
+  width: min(100% - 2 * var(--space-m), 1180px);
+  margin-inline: auto;
+}

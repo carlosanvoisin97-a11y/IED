@@ -1,0 +1,702 @@
+/* =====================================================================
+   L'ATTESA DEL COLTELLO — Catalogo d'esame · Sala I
+   Matteo Proietti (Roma, 2001) · Prompt Thinking · IED Roma
+   Foglio di stile per stampa (Chromium headless → PDF, A4).
+   Sistema visivo da output/identita.md.
+   Principio: l'artista non finisce le opere; la documentazione è impeccabile.
+   ===================================================================== */
+
+@import url('./fonts.css');
+
+/* ---------- Token d'identità (da identita.md §2 §3) ---------- */
+:root{
+  /* neutri — osso e fiato */
+  --ink-void:#0B0A0A;
+  --ink-ash:#15110F;
+  --ink-pelt:#221B18;
+  --pelt-edge:#3A312C;
+  --breath-grey:#6E6661;
+  --breath-haze:#9A918B;
+  --bone:#D9CFC2;
+  --bone-raw:#EAE3D6;
+  /* carta del catalogo: osso, calda, mai bianca */
+  --paper:#F4EFE5;
+  --paper-deep:#EBE4D6;
+  /* inchiostri su carta */
+  --text-ink:#211B17;        /* corpo su carta */
+  --text-soft:#5C544E;       /* secondario/didascalie su carta */
+  --text-faint:#8A8077;      /* terziario, righelli */
+  --rule:#C9BFB0;            /* filetti su carta */
+  --rule-soft:#DAD1C2;
+  /* accento — rosso trattenuto */
+  --held-red:#7A2E26;
+  --held-red-deep:#4A1C18;
+  --held-red-veil:rgba(122,46,38,0.12);
+
+  /* tipografia */
+  --font-display:'Fraunces','Spectral',Georgia,'Times New Roman',serif;
+  --font-text:'Newsreader','Spectral',Georgia,serif;
+  --font-mono:'IBMPlexMono',ui-monospace,'SF Mono',Menlo,monospace;
+
+  /* scala modulare 1.25 (da catalogo) */
+  --step--2:0.66rem;
+  --step--1:0.78rem;
+  --step-0:1.0rem;
+  --step-1:1.20rem;
+  --step-2:1.5rem;
+  --step-3:1.95rem;
+  --step-4:2.9rem;
+  --step-5:4.6rem;
+}
+
+/* ---------- Pagina ---------- */
+@page{
+  size:A4 portrait;            /* 210 × 297 mm */
+  /* margini ampi e arieggiati; il cartiglio vive DENTRO il margine,
+     staccato dal bordo della carta (inset via padding sui margin-box) */
+  margin:26mm 24mm 24mm 24mm;
+  /* cartiglio a piè di pagina: numero + sala */
+  @bottom-left{
+    content:"L'attesa del coltello · Sala I";
+    font-family:'IBMPlexMono',monospace;
+    font-size:7pt; letter-spacing:0.14em; color:#8A8077;
+    text-transform:uppercase; padding-bottom:6mm; padding-left:1mm;
+  }
+  @bottom-right{
+    content:counter(page);
+    font-family:'IBMPlexMono',monospace;
+    font-size:7.5pt; letter-spacing:0.18em; color:#5C544E; padding-bottom:6mm; padding-right:1mm;
+  }
+  @top-right{
+    content:"Matteo Proietti · MMXXVI";
+    font-family:'IBMPlexMono',monospace;
+    font-size:6.6pt; letter-spacing:0.16em; color:#A89E92;
+    text-transform:uppercase; padding-top:6mm; padding-right:1mm;
+  }
+}
+/* pagine scure full-bleed: niente cartiglio, niente margini di pagina */
+@page bleed{
+  margin:0;
+  @bottom-left{content:none;}
+  @bottom-right{content:none;}
+  @top-right{content:none;}
+}
+/* prima pagina del frontespizio: nessun apparato */
+@page :first{
+  margin:0;
+  @bottom-left{content:none;}
+  @bottom-right{content:none;}
+  @top-right{content:none;}
+}
+
+*{box-sizing:border-box;}
+html{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+body{
+  margin:0; padding:0;
+  background:var(--paper);
+  color:var(--text-ink);
+  font-family:var(--font-text);
+  font-size:10.6pt;
+  line-height:1.62;
+  font-weight:400;
+  text-rendering:optimizeLegibility;
+  font-feature-settings:"liga" 1,"calt" 1,"onum" 1,"pnum" 1;
+}
+
+/* --------------------------------------------------------------------
+   VISTA A SCHERMO — container centrato (il PDF usa @page; lo schermo
+   non rendeva i margini, quindi il contenuto toccava i bordi e il
+   cartiglio sembrava incollato all'angolo). Qui diamo aria laterale
+   generosa e un running header/footer che non toccano mai il bordo.
+   In stampa (PDF) tutto questo è neutro: domina @page.
+   -------------------------------------------------------------------- */
+@media screen{
+  body{
+    /* fascia esterna ampia attorno alla pagina, mai a filo */
+    padding:64px clamp(24px,6vw,112px) 112px;
+    background:
+      radial-gradient(120% 60% at 50% 0%, #ECE4D6 0%, var(--paper) 55%) fixed;
+  }
+  /* ogni macro-blocco di prima livello diventa una "pagina" centrata,
+     con margini laterali generosi e respiro verticale */
+  body > section,
+  body > article{
+    max-width:860px;
+    margin-left:auto; margin-right:auto;
+    background:var(--paper);
+    padding:40px clamp(30px,5vw,76px) 48px;
+    box-shadow:0 1px 2px rgba(33,27,23,0.05), 0 14px 40px -22px rgba(33,27,23,0.35);
+    border:1px solid var(--rule-soft);
+    border-radius:1px;
+  }
+  /* spazio tra i fogli: ritmo verticale arioso */
+  body > section + section,
+  body > section + article,
+  body > article + article,
+  body > article + section{ margin-top:56px; }
+
+  /* il frontespizio resta full-bleed scuro, centrato come gli altri ma
+     senza cornice chiara: è una pagina a sé */
+  body > section.cover{
+    max-width:860px; padding:0; border:0; box-shadow:0 18px 50px -20px rgba(11,10,10,0.6);
+    width:auto; height:auto; aspect-ratio:210 / 297;
+  }
+  .cover .blade{ height:62%; }
+
+  /* running header/footer di schermo: ancorati alla pagina, MAI al bordo.
+     Riproducono il cartiglio del PDF (@top-right / @bottom-*) ma con inset. */
+  body > section:not(.cover),
+  body > article{ position:relative; }
+  body > section:not(.cover)::before,
+  body > article::before{
+    content:"Matteo Proietti · MMXXVI";
+    position:absolute; top:16px; right:clamp(30px,5vw,76px);
+    font-family:var(--font-mono); font-size:7.6px; letter-spacing:0.16em;
+    text-transform:uppercase; color:var(--breath-haze); pointer-events:none;
+  }
+  body > section:not(.cover)::after,
+  body > article::after{
+    content:"L'attesa del coltello · Sala I";
+    position:absolute; bottom:16px; left:clamp(30px,5vw,76px);
+    font-family:var(--font-mono); font-size:7.4px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--text-faint); pointer-events:none;
+  }
+}
+
+/* grana statica strutturale (residuo del denoise mai concluso) — leggerissima.
+   Tile PNG piccolo (img/grain_dark.png) invece di filtro SVG live: stesso effetto,
+   PDF leggero (niente rasterizzazione per-pagina). */
+body::before{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:url("img/grain_dark.png"); background-size:220px 220px;
+  opacity:0.55; mix-blend-mode:multiply;
+}
+
+/* ---------- Tipografia di base ---------- */
+h1,h2,h3,h4{ font-family:var(--font-display); font-weight:400; margin:0; line-height:1.08; letter-spacing:-0.012em; }
+p{ margin:0 0 0.72em 0; }
+em,i{ font-style:italic; }
+strong{ font-weight:500; }
+a{ color:inherit; text-decoration:none; }
+
+.mono{ font-family:var(--font-mono); }
+.serif-disp{ font-family:var(--font-display); }
+
+/* etichetta/cartiglio mono (da inventario) */
+.label{
+  font-family:var(--font-mono);
+  font-size:var(--step--1);
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--text-soft);
+  font-weight:400;
+}
+.label-faint{ color:var(--text-faint); }
+
+/* sezione: ogni macro-sezione inizia su pagina nuova */
+.section{ break-before:page; position:relative; z-index:1; }
+.section:first-of-type{ break-before:avoid; }
+
+/* ====================================================================
+   I · FRONTESPIZIO (full-bleed scuro, atmosfera del recinto)
+   ==================================================================== */
+.cover{
+  page:bleed; break-after:page;
+  position:relative; width:210mm; height:297mm; overflow:hidden;
+  background:
+    radial-gradient(120% 90% at 50% 38%, #1C1512 0%, #120E0C 60%, #0B0A0A 100%);
+  color:var(--bone);
+}
+.cover::after{ /* grana viva sul frontespizio */
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background-image:url("img/grain_light.png"); background-size:220px 220px;
+  opacity:0.6; mix-blend-mode:overlay;
+}
+/* la lama: linea verticale fissa sul bordo, mai discendente (identita §5 6.2) */
+.cover .blade{
+  position:absolute; top:0; left:26mm; width:1px; height:62%;
+  background:linear-gradient(#0B0A0A 0%, var(--breath-grey) 18%, var(--bone) 100%);
+  opacity:0.5;
+}
+.cover .blade::after{
+  content:""; position:absolute; left:-2.5px; bottom:0; width:6px; height:6px;
+  background:var(--held-red); opacity:0.85; border-radius:50%;
+  box-shadow:0 0 14px 5px var(--held-red-veil);
+}
+.cover-inner{
+  position:absolute; inset:0; z-index:2;
+  display:flex; flex-direction:column; justify-content:space-between;
+  padding:30mm 24mm 22mm 40mm;
+}
+.cover-top .kicker{
+  font-family:var(--font-mono); font-size:8pt; letter-spacing:0.32em;
+  text-transform:uppercase; color:var(--breath-haze); margin-bottom:2mm;
+}
+.cover-top .kicker .red{ color:var(--held-red); }
+.cover-mid{ margin-top:auto; margin-bottom:auto; }
+.cover-room{
+  font-family:var(--font-mono); font-size:8.5pt; letter-spacing:0.3em;
+  text-transform:uppercase; color:var(--breath-haze); margin-bottom:8mm;
+}
+.cover-title{
+  font-family:var(--font-display);
+  font-weight:300; font-optical-sizing:auto;
+  font-size:var(--step-5); line-height:0.98; letter-spacing:-0.02em;
+  color:var(--bone-raw);
+}
+.cover-title em{ font-style:italic; font-weight:300; }
+.cover-sub{
+  margin-top:9mm; font-family:var(--font-text); font-style:italic;
+  font-size:var(--step-1); color:var(--bone); max-width:120mm; line-height:1.5;
+  font-weight:300;
+}
+.cover-bottom{ display:flex; justify-content:space-between; align-items:flex-end; gap:10mm; }
+.cover-bottom .col span{ display:block; }
+.cover-meta{
+  font-family:var(--font-mono); font-size:7.6pt; letter-spacing:0.12em;
+  line-height:1.85; color:var(--breath-haze); text-transform:uppercase;
+}
+.cover-meta strong{ color:var(--bone); font-weight:400; }
+.cover-climate{
+  font-family:var(--font-mono); font-size:7.6pt; letter-spacing:0.14em;
+  color:var(--breath-grey); text-transform:uppercase; text-align:right; line-height:1.8;
+}
+
+/* ====================================================================
+   COLOFONE (verso del frontespizio, su carta)
+   ==================================================================== */
+.colophon{ page:auto; break-after:page; padding-top:4mm; position:relative; z-index:1; }
+
+/* ====================================================================
+   Intestazioni di sezione
+   ==================================================================== */
+.sec-head{ margin-bottom:11mm; }
+.sec-num{
+  font-family:var(--font-mono); font-size:var(--step--1);
+  letter-spacing:0.28em; color:var(--held-red); text-transform:uppercase;
+  display:block; margin-bottom:3mm;
+}
+.sec-title{
+  font-family:var(--font-display); font-weight:300;
+  font-size:var(--step-4); line-height:1.02; color:var(--ink-ash);
+  letter-spacing:-0.015em;
+}
+.sec-rule{ height:1px; background:var(--rule); margin:5mm 0 0; border:0; }
+.sec-kicker{
+  font-family:var(--font-text); font-style:italic; color:var(--text-soft);
+  font-size:var(--step-0); margin-top:4mm; max-width:135mm;
+}
+
+/* ====================================================================
+   II · BIOGRAFIA + III · STATEMENT
+   ==================================================================== */
+.prose{ max-width:158mm; }
+.prose.measure{ max-width:140mm; } /* 60–66ch, lettura da museo */
+.prose p{ margin-bottom:0.85em; }
+.dropcap::first-letter{
+  font-family:var(--font-display); font-weight:300;
+  font-size:3.4em; line-height:0.78; float:left;
+  padding:0.06em 0.12em 0 0; color:var(--ink-ash);
+}
+.lead{ font-size:var(--step-1); line-height:1.5; color:var(--ink-ash); font-style:italic; font-weight:300; }
+
+.statement-wrap{
+  border-top:1.5px solid var(--ink-pelt);
+  border-bottom:1px solid var(--rule);
+  padding:8mm 0;
+  max-width:150mm; margin:2mm auto 0;
+}
+.statement-wrap .by{
+  font-family:var(--font-mono); font-size:var(--step--1); letter-spacing:0.18em;
+  text-transform:uppercase; color:var(--text-faint); margin-bottom:6mm; text-align:center;
+}
+.statement-body{ font-size:11.4pt; line-height:1.74; color:var(--text-ink); }
+.statement-body p{ margin-bottom:0.9em; }
+.statement-body p:first-of-type{ font-style:italic; color:var(--ink-ash); }
+
+.bio-aside{
+  margin-top:7mm; padding:5mm 7mm; background:var(--paper-deep);
+  border-left:2px solid var(--held-red); break-inside:avoid;
+}
+.bio-aside .label{ display:block; margin-bottom:3mm; }
+.bio-aside p{ font-size:var(--step--1); color:var(--text-soft); font-style:italic; margin:0; line-height:1.6; }
+
+/* versi abbandonati — coda della biografia (provenienza sepolta) */
+.versi-coda{ margin-top:9mm; padding-top:6mm; border-top:1px solid var(--rule); break-inside:avoid; }
+.versi-coda .label{ display:block; margin-bottom:3mm; }
+.versi-intro{ font-size:8.8pt; color:var(--text-soft); font-style:italic; max-width:150mm; margin-bottom:6mm; line-height:1.55; }
+.versi-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:7mm; }
+.versi-grid .verso{
+  margin:0; padding-left:5mm; border-left:1px solid var(--held-red-veil);
+  font-family:var(--font-display); font-style:italic; font-weight:300;
+  font-size:9.4pt; line-height:1.5; color:var(--held-red-deep);
+}
+.versi-grid .verso .vn{
+  display:block; font-family:var(--font-mono); font-style:normal; font-weight:400;
+  font-size:6.6pt; letter-spacing:0.16em; text-transform:uppercase;
+  color:var(--text-faint); margin-bottom:3mm;
+}
+
+/* lignaggio (chips) */
+.lineage{ margin-top:5mm; display:flex; flex-wrap:wrap; gap:3mm; break-inside:avoid; }
+.lineage span{
+  font-family:var(--font-mono); font-size:7.4pt; letter-spacing:0.08em;
+  text-transform:uppercase; color:var(--text-soft);
+  border:1px solid var(--rule); padding:1.6mm 3mm; border-radius:1px;
+}
+
+/* ====================================================================
+   IV · CORPUS — scheda a 6 voci
+   ==================================================================== */
+.opera{ break-before:page; break-inside:avoid; position:relative; z-index:1; }
+.opera-head{
+  display:flex; align-items:baseline; gap:6mm;
+  border-bottom:1px solid var(--ink-pelt); padding-bottom:4.5mm; margin-bottom:7mm;
+}
+.opera-no{
+  font-family:var(--font-mono); font-weight:500; font-size:var(--step-3);
+  color:var(--held-red); letter-spacing:0.02em; line-height:1;
+}
+.opera-titleblock{ flex:1; }
+.opera-title{
+  font-family:var(--font-display); font-weight:300; font-style:italic;
+  font-size:var(--step-2); color:var(--ink-ash); line-height:1.1; letter-spacing:-0.01em;
+}
+.opera-medium{
+  font-family:var(--font-mono); font-size:7.4pt; letter-spacing:0.12em;
+  text-transform:uppercase; color:var(--text-faint); margin-top:2.4mm;
+}
+
+/* griglia immagine + scheda */
+.opera-grid{ display:grid; grid-template-columns:1fr 1fr; gap:9mm; align-items:start; }
+.opera-grid.wide-plate{ grid-template-columns:0.92fr 1.08fr; }
+
+/* lastra immagine */
+.plate{
+  position:relative; background:var(--ink-void); padding:0;
+  border:1px solid var(--ink-pelt);
+  box-shadow:0 1mm 4mm rgba(33,27,23,0.12);
+}
+.plate img{ display:block; width:100%; height:auto; }
+/* grana sovrapposta riusabile (lastra immagine e tavole scure) */
+.grain-ov{
+  position:absolute; inset:0; pointer-events:none; mix-blend-mode:overlay; opacity:0.5;
+  background-image:url("img/grain_light.png"); background-size:200px 200px;
+}
+.plate-cap{
+  font-family:var(--font-mono); font-size:6.8pt; letter-spacing:0.1em;
+  color:var(--text-faint); text-transform:uppercase; margin-top:2.5mm; line-height:1.5;
+}
+
+/* scheda a 6 voci: righello mono a sinistra (identita §6) */
+.scheda{ border-top:1px solid var(--rule); }
+.voce{
+  display:grid; grid-template-columns:26mm 1fr; gap:5mm;
+  padding:3mm 0; border-bottom:1px solid var(--rule-soft);
+  break-inside:avoid;
+}
+.voce dt{
+  font-family:var(--font-mono); font-size:6.8pt; letter-spacing:0.16em;
+  text-transform:uppercase; color:var(--held-red); padding-top:0.6mm;
+}
+.voce dd{ margin:0; font-size:9.4pt; line-height:1.52; color:var(--text-ink); }
+.voce dd.tecnica{ font-size:9pt; color:var(--text-soft); }
+.voce dd .src-mono{
+  font-family:var(--font-mono); font-size:8pt; color:var(--text-soft);
+  letter-spacing:0.01em; word-break:break-word;
+}
+.voce dd em{ color:var(--ink-ash); }
+.didascalia{ font-style:italic; }
+.verso-sepolto{
+  display:block; margin-top:1.6mm; font-family:var(--font-text); font-style:italic;
+  color:var(--held-red-deep); font-size:8.8pt;
+}
+.testo-parete{ font-size:9.6pt; line-height:1.6; color:var(--text-ink); }
+.testo-parete::first-letter{ } /* niente capolettera nelle schede */
+
+/* opere senza .webp: tavole evocative */
+.tavola{
+  background:var(--ink-ash); color:var(--bone);
+  border:1px solid var(--ink-pelt); padding:0; overflow:hidden;
+  position:relative; min-height:122mm;
+}
+
+/* ====================================================================
+   TAVOLE EVOCATIVE specifiche (op7 morphing, op9 respiro, op2 spartito,
+   op3 formula olfattiva, op6 archivio, op10 prompt)
+   ==================================================================== */
+/* op7 — interpolazione: due volti, transito che non si posa */
+.tav-morph{ display:flex; flex-direction:column; justify-content:center; padding:12mm 10mm; }
+.tav-morph .faces{ display:flex; align-items:center; justify-content:space-between; gap:4mm; margin-bottom:8mm; }
+.tav-morph .face{
+  width:26mm; height:32mm; border:1px solid var(--breath-grey);
+  background:radial-gradient(60% 55% at 50% 42%, #2A221E 0%, #15110F 100%);
+  position:relative; opacity:0.85;
+}
+.tav-morph .face::after{
+  content:""; position:absolute; inset:18% 28% 30% 28%;
+  border-radius:48% 48% 46% 46%/60% 60% 40% 40%;
+  background:radial-gradient(closest-side, rgba(217,207,194,0.22), transparent 80%);
+}
+.tav-morph .face.mid{ opacity:0.5; filter:blur(0.5px); }
+.tav-morph .arrows{ flex:1; display:flex; align-items:center; gap:2mm; opacity:0.6; }
+.tav-morph .arrows .seg{ flex:1; height:1px; background:repeating-linear-gradient(90deg,var(--breath-grey) 0 2px,transparent 2px 7px); }
+.tav-morph .clamp{
+  font-family:var(--font-mono); font-size:7pt; letter-spacing:0.12em; color:var(--breath-haze);
+  text-transform:uppercase; text-align:center; line-height:1.8;
+}
+.tav-morph .clamp .bar{
+  display:block; height:3px; margin:3mm auto 2mm; width:78%;
+  background:linear-gradient(90deg, transparent 0 12%, var(--bone) 12% 88%, transparent 88%);
+  position:relative;
+}
+.tav-morph .clamp .bar::before,.tav-morph .clamp .bar::after{
+  content:""; position:absolute; top:-2px; width:1px; height:7px; background:var(--held-red);
+}
+.tav-morph .clamp .bar::before{ left:12%; } .tav-morph .clamp .bar::after{ right:12%; }
+
+/* op9 — respiro a 35,9°: onda + temperatura */
+.tav-breath{ display:flex; flex-direction:column; justify-content:center; align-items:center; padding:14mm 10mm; text-align:center; }
+.tav-breath .temp{
+  font-family:var(--font-display); font-weight:300; font-size:3.4rem; color:var(--bone-raw);
+  letter-spacing:-0.02em; line-height:1;
+}
+.tav-breath .wave{ width:80%; height:20mm; margin:7mm 0; }
+.tav-breath .cap{
+  font-family:var(--font-mono); font-size:7pt; letter-spacing:0.18em; text-transform:uppercase;
+  color:var(--breath-haze); line-height:1.9;
+}
+
+/* op2 — spartito-reliquia (pentagramma con note nude) */
+.tav-score{ display:flex; flex-direction:column; justify-content:center; padding:12mm 9mm; }
+.tav-score .staff{ width:100%; height:auto; }
+.tav-score .cap{
+  font-family:var(--font-mono); font-size:7pt; letter-spacing:0.16em; text-transform:uppercase;
+  color:var(--breath-haze); margin-top:7mm; text-align:center; line-height:1.9;
+}
+
+/* op3 — formula olfattiva tipografata */
+.formula{
+  background:var(--paper-deep); border:1px solid var(--rule);
+  padding:7mm 8mm; min-height:122mm; display:flex; flex-direction:column;
+}
+.formula .ftitle{
+  font-family:var(--font-mono); font-size:7.2pt; letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--held-red); margin-bottom:1.5mm;
+}
+.formula .fsub{ font-family:var(--font-text); font-style:italic; color:var(--text-soft); font-size:8.6pt; margin-bottom:6mm; }
+.formula .note{
+  display:grid; grid-template-columns:1fr auto; gap:2mm 4mm; align-items:baseline;
+  padding:3mm 0; border-bottom:1px solid var(--rule-soft);
+}
+.formula .note:last-of-type{ border-bottom:0; }
+.formula .note .nm{ font-family:var(--font-display); font-style:italic; font-size:11.5pt; color:var(--ink-ash); }
+.formula .note .pct{ font-family:var(--font-mono); font-size:11pt; font-weight:500; color:var(--text-ink); letter-spacing:0.02em; }
+.formula .note .desc{ grid-column:1 / -1; font-size:8.4pt; color:var(--text-soft); line-height:1.5; }
+.formula .bar-track{ grid-column:1 / -1; height:2px; background:var(--rule-soft); margin-top:1.6mm; position:relative; }
+.formula .bar-fill{ position:absolute; left:0; top:0; height:2px; background:var(--held-red); opacity:0.55; }
+.formula .ffoot{
+  margin-top:auto; padding-top:5mm; font-family:var(--font-mono); font-size:6.6pt;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--text-faint); line-height:1.7;
+}
+
+/* op6 — layout d'archivio (Provenienza) */
+.archivio{
+  background:var(--paper-deep); border:1px solid var(--rule); padding:7mm 8mm;
+}
+.archivio .ahead{ font-family:var(--font-mono); font-size:7pt; letter-spacing:0.2em; text-transform:uppercase; color:var(--held-red); margin-bottom:4mm; }
+.arec{ padding:3mm 0; border-bottom:1px solid var(--rule-soft); break-inside:avoid; }
+.arec:last-child{ border-bottom:0; }
+.arec .aop{ font-family:var(--font-display); font-style:italic; font-size:10.5pt; color:var(--ink-ash); }
+.arec .aparams{
+  font-family:var(--font-mono); font-size:7.6pt; color:var(--text-soft);
+  letter-spacing:0.01em; margin:1.4mm 0; word-break:break-word; line-height:1.55;
+}
+.arec .aprompt{ font-size:8.6pt; font-style:italic; color:var(--text-soft); line-height:1.5; }
+.archivio .frammenti{ margin-top:5mm; }
+.archivio .frammenti .fl{ font-style:italic; color:var(--held-red-deep); font-size:9pt; line-height:1.5; margin-bottom:2mm; padding-left:4mm; border-left:1px solid var(--held-red-veil); }
+.archivio .scartati{ font-family:var(--font-mono); font-size:7.4pt; color:var(--text-faint); letter-spacing:0.02em; margin-top:4mm; line-height:1.6; }
+
+/* op10 — il prompt mai eseguito, tipografato (lastra scura) */
+.prompt-plate{
+  background:var(--ink-void); color:var(--bone); border:1px solid var(--ink-pelt);
+  padding:9mm 9mm; min-height:122mm; position:relative; overflow:hidden;
+}
+.prompt-plate::after{
+  content:""; position:absolute; inset:0; pointer-events:none; mix-blend-mode:overlay; opacity:0.5;
+  background-image:url("img/grain_light.png"); background-size:200px 200px;
+}
+.prompt-plate .ptag{
+  font-family:var(--font-mono); font-size:8pt; letter-spacing:0.22em; text-transform:uppercase;
+  color:var(--held-red); margin-bottom:6mm; position:relative; z-index:1;
+}
+.prompt-plate .pbody{
+  font-family:var(--font-mono); font-size:8.6pt; line-height:1.85; color:var(--bone);
+  white-space:normal; position:relative; z-index:1; letter-spacing:0.005em;
+}
+.prompt-plate .pbody .stop{ color:var(--bone-raw); font-weight:500; }
+.prompt-plate .pbody .dim{ color:var(--breath-haze); }
+.prompt-plate .pfoot{
+  margin-top:7mm; font-family:var(--font-mono); font-size:6.8pt; letter-spacing:0.14em;
+  text-transform:uppercase; color:var(--breath-grey); position:relative; z-index:1;
+}
+
+/* op12 — L'ultima riga: tavola tipografica (lastra scura, sul modello op10).
+   Il verso si scrive e si ferma UN CARATTERE prima della fine. */
+.verse-plate{
+  background:var(--ink-void); color:var(--bone); border:1px solid var(--ink-pelt);
+  padding:9mm 9mm; min-height:122mm; position:relative; overflow:hidden;
+  display:flex; flex-direction:column;
+}
+.verse-plate::after{
+  content:""; position:absolute; inset:0; pointer-events:none; mix-blend-mode:overlay; opacity:0.5;
+  background-image:url("img/grain_light.png"); background-size:200px 200px;
+}
+.verse-plate .vtag{
+  font-family:var(--font-mono); font-size:8pt; letter-spacing:0.22em; text-transform:uppercase;
+  color:var(--held-red); margin-bottom:7mm; position:relative; z-index:1;
+}
+.verse-plate .vstream{
+  position:relative; z-index:1; margin:auto 0;
+  font-family:var(--font-display); font-weight:300; font-style:italic;
+  font-size:15pt; line-height:1.62; color:var(--bone-raw); letter-spacing:-0.005em;
+}
+.verse-plate .vstream .vline{ display:block; margin-bottom:3.2mm; }
+.verse-plate .vstream .vline:last-child{ margin-bottom:0; }
+/* il verso che si arresta: il carattere finale manca, poi il cursore d'arresto */
+.verse-plate .vstream .arrest{ position:relative; }
+.verse-plate .vstream .arrest .gap{
+  display:inline-block; width:0.34em; border-bottom:1px solid var(--breath-grey);
+  margin:0 0.02em -0.04em 0.04em; opacity:0.6;
+}
+.verse-plate .vstream .arrest .caret{
+  display:inline-block; width:1px; height:1.06em; vertical-align:-0.18em;
+  background:var(--held-red); margin-left:0.06em;
+}
+.verse-plate .vmeta{
+  position:relative; z-index:1; margin-top:7mm;
+  font-family:var(--font-mono); font-size:7pt; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--breath-haze); line-height:1.8;
+}
+.verse-plate .vfoot{
+  position:relative; z-index:1; margin-top:5mm; padding-top:4mm;
+  border-top:1px solid var(--pelt-edge);
+  font-family:var(--font-mono); font-size:6.8pt; letter-spacing:0.14em;
+  text-transform:uppercase; color:var(--breath-grey);
+}
+
+/* riga full-width sotto la griglia per il testo di parete lungo */
+.opera-foot{ margin-top:6mm; }
+.opera-foot .label{ display:block; margin-bottom:2.5mm; }
+
+/* ====================================================================
+   V · ALLESTIMENTO
+   ==================================================================== */
+.pianta-wrap{ margin:2mm 0 7mm; border:1px solid var(--ink-pelt); background:var(--ink-ash); padding:3mm; }
+.pianta-wrap img{ display:block; width:100%; height:auto; }
+.pianta-cap{ font-family:var(--font-mono); font-size:7pt; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-faint); margin-top:3mm; }
+
+.render-grid{ display:grid; grid-template-columns:1fr 1fr; gap:7mm; margin:5mm 0; break-inside:avoid; }
+.render{ border:1px solid var(--ink-pelt); background:var(--ink-void); break-inside:avoid; }
+.render img{ display:block; width:100%; height:auto; }
+.render figcaption{ font-family:var(--font-mono); font-size:6.8pt; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-faint); padding:2.5mm 3mm; background:var(--paper); }
+
+.wall-text{
+  background:var(--ink-ash); color:var(--bone); padding:9mm 10mm; margin:5mm 0;
+  position:relative; border-left:3px solid var(--held-red);
+}
+.wall-text .wt-room{ font-family:var(--font-mono); font-size:7.4pt; letter-spacing:0.24em; text-transform:uppercase; color:var(--breath-haze); margin-bottom:2mm; }
+.wall-text .wt-title{ font-family:var(--font-display); font-weight:300; font-size:var(--step-3); color:var(--bone-raw); margin-bottom:5mm; }
+.wall-text p{ color:var(--bone); font-size:10pt; line-height:1.66; max-width:150mm; }
+.wall-text p em{ color:var(--bone-raw); }
+
+/* scheda sensoriale: tabella da referto */
+.senso{ margin-top:6mm; }
+.senso h3{ font-family:var(--font-display); font-weight:400; font-size:var(--step-1); color:var(--ink-ash); margin:6mm 0 3mm; }
+table.referto{ width:100%; border-collapse:collapse; margin:2mm 0 4mm; break-inside:avoid; }
+table.referto th{
+  font-family:var(--font-mono); font-size:6.8pt; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--held-red); text-align:left; padding:2mm 3mm; border-bottom:1px solid var(--ink-pelt); vertical-align:bottom;
+}
+table.referto td{
+  font-size:8.8pt; padding:2mm 3mm; border-bottom:1px solid var(--rule-soft);
+  color:var(--text-ink); vertical-align:top; line-height:1.45;
+}
+table.referto td:first-child{ font-family:var(--font-mono); font-size:7.8pt; letter-spacing:0.04em; color:var(--text-soft); white-space:nowrap; }
+table.referto td strong{ color:var(--ink-ash); font-weight:500; }
+.senso .note-tecnica{ font-size:8.8pt; color:var(--text-soft); font-style:italic; line-height:1.55; margin-top:1mm; }
+
+/* ====================================================================
+   VI · COMUNICAZIONE
+   ==================================================================== */
+.doc-block{ margin-bottom:9mm; break-inside:avoid; }
+.doc-tag{
+  font-family:var(--font-mono); font-size:7pt; letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--held-red); border-bottom:1px solid var(--rule); padding-bottom:2mm; margin-bottom:5mm; display:block;
+}
+.comunicato .institutional{
+  font-family:var(--font-mono); font-size:7.6pt; letter-spacing:0.1em; line-height:1.9;
+  text-transform:uppercase; color:var(--text-soft); margin-bottom:5mm;
+}
+.comunicato h3{ font-family:var(--font-display); font-style:italic; font-weight:300; font-size:var(--step-2); color:var(--ink-ash); margin-bottom:5mm; }
+.comunicato p{ font-size:9.8pt; line-height:1.6; }
+.pullquote{
+  font-family:var(--font-display); font-style:italic; font-weight:300; font-size:var(--step-1);
+  color:var(--ink-ash); border-left:2px solid var(--held-red); padding:2mm 0 2mm 6mm; margin:6mm 0; line-height:1.45;
+}
+.pullquote .attr{ display:block; font-family:var(--font-mono); font-style:normal; font-size:7.4pt; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-faint); margin-top:3mm; }
+
+.social-grid{ display:grid; grid-template-columns:1fr 1fr; gap:7mm; }
+.post{ border:1px solid var(--rule); padding:6mm; background:var(--paper-deep); break-inside:avoid; }
+.post .ph{ font-family:var(--font-mono); font-size:7pt; letter-spacing:0.14em; text-transform:uppercase; color:var(--text-faint); margin-bottom:4mm; }
+.post .pimg{ font-family:var(--font-mono); font-size:7pt; color:var(--text-soft); letter-spacing:0.04em; margin-bottom:4mm; padding-bottom:3mm; border-bottom:1px dashed var(--rule); }
+.post .cap{ font-size:9pt; line-height:1.55; white-space:pre-line; }
+.post .cap .work{ font-style:italic; }
+.post .tags{ font-family:var(--font-mono); font-size:7pt; color:var(--held-red); letter-spacing:0.04em; margin-top:4mm; }
+
+.invito{ border:1px solid var(--rule); padding:8mm; background:var(--paper); max-width:155mm; }
+.invito .subj{ font-family:var(--font-mono); font-size:7.6pt; letter-spacing:0.08em; color:var(--text-soft); border-bottom:1px solid var(--rule); padding-bottom:3mm; margin-bottom:5mm; }
+.invito p{ font-size:9.8pt; line-height:1.62; }
+.invito .when{ font-family:var(--font-display); font-style:italic; font-size:var(--step-1); color:var(--ink-ash); margin:4mm 0; }
+.invito .sign{ font-family:var(--font-mono); font-size:8pt; letter-spacing:0.06em; color:var(--text-soft); margin-top:5mm; line-height:1.7; }
+
+/* appendice: recensione */
+.recensione{ max-width:158mm; }
+.recensione .masthead{ font-family:var(--font-mono); font-size:7.4pt; letter-spacing:0.16em; text-transform:uppercase; color:var(--text-soft); border-bottom:1px solid var(--ink-pelt); padding-bottom:3mm; margin-bottom:6mm; }
+.recensione .masthead em{ display:block; font-family:var(--font-text); font-style:italic; text-transform:none; letter-spacing:0; color:var(--text-faint); font-size:8.6pt; margin-top:1.5mm; }
+.recensione h3{ font-family:var(--font-display); font-weight:300; font-size:var(--step-3); color:var(--ink-ash); line-height:1.05; }
+.recensione .deck{ font-family:var(--font-display); font-style:italic; font-weight:300; font-size:var(--step-1); color:var(--text-soft); margin:2mm 0 1mm; }
+.recensione .byline{ font-family:var(--font-mono); font-size:7.4pt; letter-spacing:0.14em; text-transform:uppercase; color:var(--text-faint); margin-bottom:6mm; }
+.recensione .body{ column-count:2; column-gap:9mm; font-size:9.2pt; line-height:1.56; text-align:justify; hyphens:auto; }
+.recensione .body p{ margin-bottom:0.7em; }
+.recensione .note-fin{ font-family:var(--font-mono); font-size:7pt; color:var(--text-faint); letter-spacing:0.04em; margin-top:5mm; font-style:normal; }
+
+/* explanatory mono notes (apparato curatoriale) */
+.curatorial-note{
+  font-family:var(--font-text); font-style:italic; color:var(--text-soft);
+  font-size:8.8pt; line-height:1.55; border-top:1px solid var(--rule-soft);
+  padding-top:3mm; margin-top:6mm; max-width:155mm;
+}
+
+/* explicit colofone styling */
+.colofone-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10mm; margin-top:8mm; }
+.colofone-grid .blk .label{ display:block; margin-bottom:2.5mm; }
+.colofone-grid .blk p{ font-size:9pt; color:var(--text-ink); line-height:1.6; margin-bottom:0.5em; }
+.colofone-grid .blk p.small{ font-size:8.2pt; color:var(--text-soft); }
+.colofone-principle{
+  margin-top:10mm; padding-top:6mm; border-top:1px solid var(--rule);
+  font-family:var(--font-display); font-style:italic; font-weight:300;
+  font-size:var(--step-1); color:var(--ink-ash); line-height:1.4; max-width:150mm;
+}
+
+/* indice */
+.toc{ margin-top:8mm; max-width:150mm; }
+.toc .row{ display:flex; align-items:baseline; gap:4mm; padding:2.6mm 0; border-bottom:1px solid var(--rule-soft); }
+.toc .rn{ font-family:var(--font-mono); font-size:8pt; color:var(--held-red); letter-spacing:0.12em; width:14mm; }
+.toc .rt{ font-family:var(--font-display); font-size:11pt; color:var(--ink-ash); flex:1; }
+.toc .rd{ font-family:var(--font-text); font-style:italic; font-size:8.6pt; color:var(--text-soft); }
+
+/* utilities */
+.spacer-s{ height:4mm; } .spacer-m{ height:8mm; }
+.two-col{ column-count:2; column-gap:9mm; }
+.keep{ break-inside:avoid; }

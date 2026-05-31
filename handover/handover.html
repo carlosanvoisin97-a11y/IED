@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HANDOVER — «L'attesa del coltello» · Matteo Proietti</title>
+  <link rel="stylesheet" href="handover.css">
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- ── COVER HEADER ── -->
+  <header class="doc-header">
+    <div class="doc-kicker">Documento di passaggio · Progetto IED Roma</div>
+    <h1>HANDOVER — «L'attesa del coltello» (Sala I)<br>Matteo Proietti</h1>
+    <div class="doc-subtitle">Documento di passaggio per il team creativo. Nessuna credenziale inclusa: chiavi API, account e repository vanno configurati dal team (vedi §8).</div>
+  </header>
+
+  <!-- ── TABLE OF CONTENTS ── -->
+  <nav class="toc" aria-label="Indice">
+    <h2>Indice</h2>
+    <ol>
+      <li><a href="#s1">Contesto</a></li>
+      <li><a href="#s2">Output prodotti</a></li>
+      <li><a href="#s3">Mappa del repository</a></li>
+      <li><a href="#s4">Metodo</a></li>
+      <li><a href="#s5">Skills usate (Claude Code)</a></li>
+      <li><a href="#s6">Strumenti / tool esterni</a></li>
+      <li><a href="#s7">Come modificare / rilavorare l'output</a></li>
+      <li><a href="#s8">Come usare Claude Code (onboarding team) + setup strumenti</a></li>
+      <li><a href="#s9">Stato e cose aperte</a></li>
+    </ol>
+  </nav>
+
+  <!-- ══════════════════════════════════════════
+       §1  CONTESTO
+  ══════════════════════════════════════════ -->
+  <section class="section" id="s1">
+    <h2><span class="sec-num">1.</span> Contesto</h2>
+
+    <p>Progetto accademico IED Roma, corso <strong>Prompt Thinking</strong> (Andrea Colamedici). L'esercizio: <strong>costruire un artista contemporaneo finzionale</strong> + il suo <strong>corpus</strong> + un <strong>dispositivo curatoriale</strong> (una sala), nella tradizione degli artisti costruiti (Reena Spaulings, The Atlas Group, Goldin+Senneby, Nat Tate). Mostra collettiva all'<strong>ex Mattatoio di Testaccio, La Pelanda</strong> (14 nov 2026 – 28 feb 2027).</p>
+
+    <p><strong>L'artista — Matteo Proietti (Roma, 2001):</strong> poeta. Frattura: perde il più importante concorso di poesia d'Italia contro una poesia scritta interamente da un'IA → smette di scrivere e «smette di finire». Usa l'IA ma la <strong>arresta prima che risolva</strong>.</p>
+
+    <p><strong>La sala — «L'attesa del coltello» (Sala I):</strong> la soglia della mostra, l'unica in cui «il coltello non cade». Coltello = IA, animale/maiale = uomo (il mattatoio). Tesi: «<strong>tutto ciò che non è ancora stato tagliato</strong>».</p>
+
+    <p><strong>Principio guida (da non rompere mai):</strong> <em>l'artista non finisce le opere; la documentazione è impeccabile.</em> Le opere sono stati intermedi, arrestati; il catalogo è perfetto.</p>
+
+    <p><strong>Filtro anti-«Black Mirror» (regola estetica):</strong> stare sul <em>prima</em> (non l'esito), creare uno <em>stato</em> non una <em>storia</em>, l'umano come soggetto (non la tecnologia), ambiguità non morale, presente non futuro distopico, registro di sospensione. Vedi <code>CONCEPT.md §5</code>.</p>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       §2  OUTPUT PRODOTTI
+  ══════════════════════════════════════════ -->
+  <section class="section" id="s2">
+    <h2><span class="sec-num">2.</span> Output prodotti</h2>
+
+    <ul>
+      <li><strong>Sito-mostra interattivo</strong> (Vite + Three.js). Deployment attuale: <span class="url">https://site-seven-rouge-36.vercel.app</span> <em>(da rideployare sul proprio account, §8)</em>.</li>
+      <li><strong>Corpus di 12 opere</strong>: 5 immagini «arrestate» (op1, 4, 5, 8, 11), audio generativo (op2 lamento, op9 respiro), formula olfattiva (op3), video (op7, Veo), testo/generativo (op10, op12), archivio (op6).</li>
+      <li><strong>Catalogo d'esame</strong>: <code>catalogo/catalogo.pdf</code> (31 pp, 6 sezioni) + sorgente HTML/CSS.</li>
+      <li><strong>Allestimento</strong>: pianta 95 m² (<code>pianta.svg</code>), 2 render, scheda sensoriale.</li>
+      <li><strong>Comunicazione</strong>: comunicato, 2 post, invito, recensione su rivista fittizia.</li>
+      <li><strong>Pacchetto di consegna</strong>: <code>CONSEGNA/</code> (+ zip).</li>
+      <li><strong>Documenti di metodo</strong>: <code>CONCEPT.md</code>, <code>PLAN.md</code>, <code>STATUS.md</code>, <code>DECISIONI.md</code>, <code>SPESE.md</code>, <code>FINAL_REPORT.md</code>.</li>
+    </ul>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       §3  MAPPA DEL REPOSITORY
+  ══════════════════════════════════════════ -->
+  <section class="section" id="s3">
+    <h2><span class="sec-num">3.</span> Mappa del repository (dove sta cosa)</h2>
+
+<pre><code>/site                  Sito (Vite + Three.js vanilla)
+  src/data/opere.js    ← LE 12 OPERE: dati + scheda a 6 voci
+                         (fonte per sito e catalogo)
+  src/ui/              corpus.js (griglia), plate.js (provini),
+                       opera-overlay.js (vista opera),
+                       intro.js (loader), cursor.js
+  src/scenes/          denoise.* (home), interpolate.* (op7),
+                       ultimariga.js (op12)
+  src/audio/           respiro.js (op9), lamento.js (op2)
+  public/opere/        immagini, video (op07-veo.mp4), audio
+  src/styles/          design-tokens.css (palette/typo),
+                       base.css, layout.css
+
+/assets/immagini       opere sorgente + gen.py (Stability)
+                       + arresto.py (post «arresto»)
+                       + generation-log.md
+/assets/video          op7_veo.mp4 + veo_gen.py (Veo)
+
+/output/testi          nome, biografia-critica, statement,
+                       versi-abbandonati, testi-di-parete (.md)
+/output/schede.md      le 12 schede a 6 voci
+/output/identita.md    sistema visivo (palette HEX, tipografia,
+                       motion)
+/output/allestimento   pianta.svg, render/, scheda-sensoriale.md,
+                       allestimento.md
+
+/catalogo              catalogo.html, catalogo.css,
+                       fonts/ (self-hostati), img/, catalogo.pdf
+
+/comms                 comunicato, social, invito, recensione fittizia
+
+.env                   chiavi API (NON in git) — da creare (§8)</code></pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       §4  METODO
+  ══════════════════════════════════════════ -->
+  <section class="section" id="s4">
+    <h2><span class="sec-num">4.</span> Metodo (come è stato costruito)</h2>
+
+    <ol>
+      <li><strong>Brainstorming strutturato</strong> → diagnosi del rischio «Black Mirror» → <strong>checklist anti-BM</strong> (filtro su ogni opera).</li>
+      <li><strong>Posizione dell'artista</strong> prima dello stile → 2–3 direzioni concettuali → <strong>pressure test</strong> a 5 filtri → concept bloccato (<code>CONCEPT.md</code>).</li>
+      <li><strong>Grammatica del corpus</strong> (tratti ricorrenti che rendono coerenti le 12 opere): arresto prima della risoluzione, palette osso/grigio-fiato/rosso-trattenuto, grana di diffusione, ~35,9&nbsp;°C, verso sepolto come «provenienza», titoli al grado incompiuto.</li>
+      <li><strong>Esecuzione a ondate con agenti paralleli</strong>: un agente per dominio indipendente (scrittura · immagini · sito · audio · allestimento · comunicazione · catalogo), con review e checkpoint git frequenti su un branch dedicato + PR finale.</li>
+      <li><strong>Regola tecnica chiave per le immagini</strong>: il look «arrestato» NON si spera dal modello — si <strong>garantisce in post-processing</strong> (<code>arresto.py</code>). Il modello dà solo la forma base.</li>
+    </ol>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       §5  SKILLS
+  ══════════════════════════════════════════ -->
+  <section class="section" id="s5">
+    <h2><span class="sec-num">5.</span> Skills usate (Claude Code)</h2>
+
+    <ul>
+      <li><strong>Processo:</strong> <code>superpowers:brainstorming</code>, <code>superpowers:writing-plans</code>, <code>superpowers:executing-plans</code>, <code>superpowers:dispatching-parallel-agents</code>.</li>
+      <li><strong>Front-end / visual:</strong> <code>frontend-design</code>, <code>web-design-3d</code>, <code>web-artifacts-builder</code>, <code>algorithmic-art</code>, <code>theme-factory</code>, <code>brand-guidelines</code>, <code>canvas-design</code>.</li>
+      <li><strong>Documenti:</strong> <code>pdf</code>.</li>
+      <li><strong>Copy / comms:</strong> <code>copywriting</code>, <code>marketing-ideas</code>.</li>
+      <li><strong>QA:</strong> <code>webapp-testing</code>.</li>
+    </ul>
+
+    <blockquote>
+      <p>Nota: una skill di finalizzazione autonoma («goal») non era disponibile nell'ambiente; sostituita con <code>executing-plans</code> + un loop di checkpoint.</p>
+    </blockquote>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       §6  STRUMENTI / TOOL ESTERNI
+  ══════════════════════════════════════════ -->
+  <section class="section" id="s6">
+    <h2><span class="sec-num">6.</span> Strumenti / tool esterni</h2>
+
+    <ul>
+      <li><strong>Immagini:</strong> Stability AI — modello <strong>SD3.5 Medium</strong> via API REST. Script <code>assets/immagini/gen.py</code> (usa <code>curl</code> con User-Agent browser per aggirare un blocco Cloudflare). Post-processing in Python (Pillow + numpy): <code>assets/immagini/arresto.py</code>.</li>
+      <li><strong>Video:</strong> Google <strong>Veo 3.1</strong> (<code>veo-3.1-generate-preview</code>) via Gemini API (operazione long-running + polling). Script <code>assets/video/veo_gen.py</code>.</li>
+      <li><strong>Audio:</strong> Web Audio API (codice nativo in <code>site/src/audio/</code>) + <strong>ElevenLabs</strong> (una voce sussurrata in op2).</li>
+      <li><strong>Sito:</strong> <strong>Vite</strong> + <strong>Three.js / WebGL</strong> (vanilla, nessun framework).</li>
+      <li><strong>Deploy:</strong> <strong>Vercel</strong> (hosting statico).</li>
+      <li><strong>Render PDF:</strong> <strong>Chrome headless</strong> (stampa HTML→PDF).</li>
+    </ul>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       §7  COME MODIFICARE
+  ══════════════════════════════════════════ -->
+  <section class="section" id="s7">
+    <h2><span class="sec-num">7.</span> Come modificare / rilavorare l'output</h2>
+
+    <h3>Testi (bio, statement, versi, schede)</h3>
+    <p>Modifica i <code>.md</code> in <code>output/testi/</code> e <code>output/schede.md</code>, e i campi corrispondenti in <code>site/src/data/opere.js</code>. Tieni <strong>distinte le due voci</strong>: curatore (3ª persona, registro da catalogo) e artista (1ª persona, mai moralizzante).</p>
+
+    <h3>Opere-immagine (op1, 4, 5, 8, 11)</h3>
+    <p>Rigenera la base con <code>gen.py</code> (cambia <code>prompt</code>, <code>seed</code>, <code>steps</code>, <code>cfg</code>), poi applica <code>arresto.py</code> (i parametri usati sono in <code>generation-log.md</code>). Il look «arrestato» si regola tutto in <code>arresto.py</code>: gradient-map alla palette, rumore/grana, dissolvenza dei bordi, forma risolta ~40–55&nbsp;%, rosso trattenuto in modalità <code>tint</code>. Esporta <code>.webp</code> e mettilo in <code>site/public/opere/</code> con il nome atteso (es. <code>01-studio-corpo.webp</code>, <code>op11-calco-del-fiato.webp</code>).</p>
+
+    <h3>Video (op7)</h3>
+    <p>Rigenera con <code>veo_gen.py</code> (cambia il prompt). Sostituisci <code>site/public/opere/op07-veo.mp4</code> (+ <code>op07-veo-poster.jpg</code>). Il sito monta il video se il file esiste, altrimenti usa lo shader di interpolazione (fallback automatico).</p>
+
+    <h3>Opere vive (audio / shader)</h3>
+    <p>Codice in <code>site/src/audio/</code> (respiro, lamento) e <code>site/src/scenes/</code> (interpolate, ultimariga). Espongono <code>start()</code> / <code>stop()</code> / <code>destroy()</code> e si fermano fuori vista.</p>
+
+    <h3>Sito</h3>
+    <p><code>cd site &amp;&amp; npm install &amp;&amp; npm run dev</code> (sviluppo) · <code>npm run build</code> (produzione → <code>site/dist</code>). Le opere si aggiungono/modificano in <code>src/data/opere.js</code> (campi: <code>plate</code>, <code>live</code>, le 6 voci della scheda, <code>verso</code>). Palette/tipografia in <code>src/styles/design-tokens.css</code> e <code>output/identita.md</code>.</p>
+
+    <h3>Catalogo</h3>
+    <p>Modifica <code>catalogo/catalogo.html</code> e <code>catalogo/catalogo.css</code> (i font sono self-hostati in <code>catalogo/fonts/</code>). Rigenera il PDF con Chrome headless:</p>
+<pre><code>"&lt;chrome&gt;" --headless --no-pdf-header-footer \
+  --print-to-pdf=catalogo.pdf catalogo.html</code></pre>
+
+    <h3>Allestimento</h3>
+    <p><code>pianta.svg</code> è vettoriale ed editabile; i render si rigenerano con <code>gen.py</code>.</p>
+
+    <h3>Comunicazione</h3>
+    <p>Modifica i <code>.md</code> in <code>comms/</code>.</p>
+
+    <h3>Pubblicazione</h3>
+    <p>Dalla cartella <code>site/</code>: <code>vercel deploy --prod</code> (serve un account Vercel + token). Output statico già pronto in <code>site/dist</code>.</p>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       §8  ONBOARDING TEAM
+  ══════════════════════════════════════════ -->
+  <section class="section" id="s8">
+    <h2><span class="sec-num">8.</span> Come usare Claude Code (onboarding team) + setup strumenti</h2>
+
+    <p><strong>Claude Code</strong> è un assistente AI da terminale: legge e scrive i file del progetto, esegue comandi, genera asset tramite script e può orchestrare più «agenti» in parallelo. Si lavora parlandogli in linguaggio naturale dentro la cartella del progetto.</p>
+
+    <h3>Skills (capacità riutilizzabili)</h3>
+    <p>Le skills (es. <code>frontend-design</code>, <code>pdf</code>) si invocano scrivendo <code>/nome-skill</code> o chiedendo a Claude di usarle. Si installano come <strong>plugin</strong>: dal gestore plugin (<code>/plugin</code>) si aggiunge un <em>marketplace</em> e si installano i plugin che contengono le skill. In alternativa, una skill è una cartella con un file <code>SKILL.md</code> (+ risorse) da mettere in <code>.claude/skills/</code> (progetto) o <code>~/.claude/skills/</code> (utente).</p>
+
+    <h3>Tool esterni via MCP</h3>
+    <p>Model Context Protocol — es. Figma, Canva, Vercel, Microsoft 365. Si aggiungono come <em>server MCP</em> nella configurazione di Claude Code (comando <code>claude mcp add …</code> oppure dai settings). I connettori con login (OAuth) si attivano tramite il flusso di autenticazione integrato (Claude mostra un link da aprire nel browser).</p>
+
+    <h3>Chiavi API dei modelli generativi (Stability, Gemini/Veo, ElevenLabs)</h3>
+    <ol>
+      <li>Crea un account su ciascun servizio e ottieni la API key.</li>
+      <li>Crea un file <strong><code>.env</code></strong> nella root del progetto con righe <code>NOME_CHIAVE=valore</code> (es. <code>STABILITY_API_KEY=…</code>, <code>GEMINI_API_KEY=…</code>, <code>ELEVENLABS_API_KEY=…</code>, <code>VERCEL_TOKEN=…</code>).</li>
+      <li><strong>Non committare mai <code>.env</code></strong> (è già in <code>.gitignore</code>). Gli script <code>gen.py</code> / <code>veo_gen.py</code> leggono le chiavi da lì.</li>
+    </ol>
+
+    <blockquote>
+      <p>Attenzione shell: non «sorgentare» il <code>.env</code> in zsh; leggi i valori con <code>grep '^NOME=' .env | cut -d= -f2-</code>.</p>
+    </blockquote>
+
+    <h3>Flusso di lavoro consigliato</h3>
+    <p>(Lo stesso usato in questo progetto): chiedi a Claude di <em>brainstormare</em> → far scrivere un <em>piano</em> → <em>eseguire con agenti paralleli</em> (un agente per dominio indipendente) → <em>commit frequenti su un branch</em> → <em>PR</em>. Tieni un file <code>STATUS.md</code> come tracker per poter riprendere in qualsiasi momento.</p>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       §9  STATO E COSE APERTE
+  ══════════════════════════════════════════ -->
+  <section class="section" id="s9">
+    <h2><span class="sec-num">9.</span> Stato e cose aperte</h2>
+
+    <ul>
+      <li><strong>Wave UI in corso:</strong> effetti sito aggiuntivi (transizione d'entrata «nella sala», navigazione tra le opere nell'overlay, card 3D fluttuanti).</li>
+      <li><strong>Non realizzato (extra opzionale):</strong> «libro-catalogo non tagliato» fisico (con coltello di carta).</li>
+      <li><strong>Sicurezza:</strong> il team usi le proprie chiavi nel <code>.env</code> locale; rigenerare eventuali chiavi condivise.</li>
+      <li>Avanzamento dettagliato e decisioni: <code>STATUS.md</code>, <code>DECISIONI.md</code>, <code>SPESE.md</code>.</li>
+    </ul>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="doc-footer">
+    HANDOVER — «L'attesa del coltello» · Progetto IED Roma, corso Prompt Thinking
+  </footer>
+
+</div>
+</body>
+</html>

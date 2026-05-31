@@ -1,0 +1,117 @@
+<!doctype html>
+<!--
+  L'ATTESA DEL COLTELLO · Sala I — ex Mattatoio di Testaccio
+  IED Roma · Prompt Thinking · MMXXVI
+  «Tutto ciò che non è ancora stato tagliato.»
+
+  provenienza (verso sepolto): la lama è alzata. non cade.
+-->
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>L'attesa del coltello — Sala I</title>
+    <meta
+      name="description"
+      content="Opere arrestate prima della risoluzione. La temperatura del prima, a 35,9°C. Sala I, ex Mattatoio di Testaccio. IED Roma, 2026."
+    />
+    <meta name="theme-color" content="#0B0A0A" />
+    <!-- favicon inline: un punto d'osso su fondo cenere (niente richiesta esterna) -->
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230B0A0A'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%237A2E26'/%3E%3C/svg%3E"
+    />
+
+    <!-- preconnect ai font (rimovibile se si self-hostano in /public/fonts) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  </head>
+
+  <body>
+    <!-- la scena 3D vive sotto tutto, a tutto schermo -->
+    <canvas id="scene-denoise" aria-hidden="true"></canvas>
+    <!-- fallback se manca WebGL: grana statica, stesso titolo (mai pagina rotta) -->
+    <div class="scene-fallback" aria-hidden="true"></div>
+
+    <!-- la cornice del recinto + la lama alzata che non discende -->
+    <div class="pen-frame" aria-hidden="true"></div>
+    <div class="blade" aria-hidden="true"></div>
+
+    <!-- grana di diffusione: overlay film fisso -->
+    <div class="grain" aria-hidden="true"></div>
+
+    <!-- firma climatica: la temperatura del prima -->
+    <div class="climate" aria-hidden="true">
+      <span class="climate__dot"></span>
+      <span class="meta">≈&nbsp;35,9&nbsp;°C</span>
+    </div>
+
+    <main>
+      <!-- ====================== HOME / HERO ====================== -->
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero__panel">
+          <div class="hero__kicker">
+            <span class="meta">Sala&nbsp;I</span>
+            <span class="meta">ex Mattatoio di Testaccio · La Pelanda</span>
+            <span class="meta held">14 nov 2026 — 28 feb 2027</span>
+          </div>
+
+          <h1 class="hero__title" id="hero-title">
+            L’attesa<br />del coltello
+          </h1>
+
+          <!-- verso sepolto come provenienza (rivelato a chi legge lentamente) -->
+          <p class="hero__lede" data-verso="ti ho tenuto al caldo, un grado sotto il vivo">
+            Un poeta usa l’intelligenza artificiale e la <em>arresta</em> prima che
+            risolva. Le opere restano sulla soglia. Qui in questa sala, il coltello
+            non cade.
+          </p>
+
+          <p class="hero__cue meta">scorri — niente si compie</p>
+        </div>
+      </section>
+
+      <!-- ====================== CORPUS / 12 OPERE ====================== -->
+      <section class="corpus" aria-labelledby="corpus-title">
+        <div class="wrap">
+          <header class="section-head" data-reveal>
+            <span class="meta">Corpus · dodici stati sospesi</span>
+            <h2 id="corpus-title">
+              Studio per tutto ciò che non è ancora stato tagliato
+            </h2>
+            <p>
+              Dodici opere fatte con l’IA e fermate sulla soglia: lo schizzo, non il
+              finito; le note, non la canzone; la formula, non il profumo. Ogni opera
+              porta sepolto un frammento delle poesie abbandonate.
+            </p>
+            <p class="meta" style="margin-top: var(--space-s); color: var(--breath-grey);">
+              apri ogni scheda — il lavoro non si risolve
+            </p>
+          </header>
+
+          <!-- la griglia viene popolata da ui/corpus.js a partire da data/opere.js -->
+          <div class="corpus__grid" id="corpus-grid"></div>
+        </div>
+      </section>
+
+      <!-- ====================== COLOPHON ====================== -->
+      <footer class="colophon">
+        <div class="wrap">
+          <span class="meta">Colophon · principio curatoriale</span>
+          <p>
+            <strong>L’artista rifiuta di finire l’arte;</strong> il gruppo curatoriale
+            finisce la documentazione in modo impeccabile. Opere incompiute, catalogo
+            perfetto.
+          </p>
+          <p class="meta">
+            IED Roma · Prompt Thinking · MMXXVI · Andrea Colamedici — Sala&nbsp;I, 95&nbsp;m²
+          </p>
+        </div>
+      </footer>
+    </main>
+
+    <!-- entry: Vite risolve il modulo e l'intera catena import -->
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

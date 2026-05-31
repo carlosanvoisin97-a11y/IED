@@ -1,0 +1,13 @@
+.env
+.env.*
+node_modules/
+dist/
+build/
+.vercel/
+.DS_Store
+*.log
+npm-debug.log*
+# asset binari pesanti: valutare git-lfs se necessario
+# pacchetto di consegna (artefatti derivati, restano su disco per l'invio)
+/CONSEGNA/
+/CONSEGNA.zip
