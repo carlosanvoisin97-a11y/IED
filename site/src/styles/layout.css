@@ -1,0 +1,314 @@
+/* =============================================================================
+   LAYOUT — recinto, hero/home, griglia opere, cartiglio
+   "Layout a recinto": una cornice/bordo chiude sempre lo spazio (CONCEPT §6.2).
+   ============================================================================= */
+
+/* --- Cornice del recinto: bordo fisso che chiude lo spazio ---------------- */
+.pen-frame {
+  position: fixed;
+  inset: var(--space-s);
+  z-index: var(--z-content);
+  pointer-events: none;
+  border: var(--border-pen);
+  border-radius: var(--radius);
+  mix-blend-mode: screen;
+  opacity: 0.5;
+}
+
+/* La "lama alzata": linea verticale fissa sul bordo, mai discendente.
+   Si ferma in alto — non completa mai la discesa (CONCEPT §6.2, §7 op.4). */
+.blade {
+  position: fixed;
+  top: var(--space-s);
+  left: 50%;
+  width: 1px;
+  height: 22vh;            /* alzata: parte dall'alto e si arresta */
+  background: linear-gradient(
+    to bottom,
+    var(--held-red-deep) 0%,
+    var(--breath-grey) 60%,
+    transparent 100%
+  );
+  z-index: var(--z-content);
+  pointer-events: none;
+  opacity: 0.55;
+  transform-origin: top center;
+  animation: blade-hold var(--dur-breath) var(--ease-breath) infinite;
+}
+@keyframes blade-hold {
+  /* trema appena, non cade mai */
+  0%, 100% { transform: scaleY(1); opacity: 0.5; }
+  50%      { transform: scaleY(1.04); opacity: 0.62; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .blade { animation: none; }
+}
+
+/* --- HERO / HOME ----------------------------------------------------------- */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  align-items: end;
+}
+
+/* canvas della scena 3D: livello di fondo, a tutto schermo */
+#scene-denoise {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-scene);
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* poster di fallback (se manca WebGL): grana statica, stesso titolo */
+.scene-fallback {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-scene);
+  background:
+    var(--warmth-core),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='0.5'/%3E%3C/svg%3E");
+  display: none;
+}
+
+/* pannello semitrasparente: tiene leggibile il testo sopra la scena 3D */
+.hero__panel {
+  position: relative;
+  z-index: var(--z-content);
+  width: min(100% - 2 * var(--space-m), 1180px);
+  margin-inline: auto;
+  margin-bottom: clamp(var(--space-xl), 12vh, var(--space-3xl));
+  padding: var(--space-l) var(--space-m) var(--space-m);
+  background: color-mix(in oklab, var(--ink-ash) 55%, transparent);
+  backdrop-filter: blur(6px) saturate(0.9);
+  -webkit-backdrop-filter: blur(6px) saturate(0.9);
+  border-top: 1px solid color-mix(in oklab, var(--ink-pelt) 80%, transparent);
+  border-radius: var(--radius);
+}
+
+.hero__kicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-s) var(--space-m);
+  align-items: baseline;
+  margin-bottom: var(--space-m);
+}
+
+.hero__title {
+  font-size: var(--step-5);
+  font-weight: 320;
+  font-style: italic;     /* incisione/frontespizio */
+  max-width: 14ch;
+}
+
+.hero__lede {
+  margin-top: var(--space-m);
+  color: var(--breath-haze);
+  font-size: var(--step-1);
+  max-width: 52ch;
+}
+
+/* indicatore climatico: la firma "≈ 35,9°C" in un angolo */
+.climate {
+  position: fixed;
+  right: var(--space-l);
+  top: var(--space-l);
+  z-index: var(--z-content);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+.climate__dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--held-red);
+  box-shadow: 0 0 10px 2px var(--held-red-veil);
+  animation: pulse-hold var(--dur-breath) var(--ease-breath) infinite;
+}
+/* il rosso pulsa ma NON satura: si ferma a ~70% e torna (il sangue non cade) */
+@keyframes pulse-hold {
+  0%, 100% { opacity: 0.35; transform: scale(0.9); }
+  46%      { opacity: 0.7;  transform: scale(1.12); } /* arresto al 70%, mai pieno */
+  54%      { opacity: 0.66; transform: scale(1.1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .climate__dot { animation: none; opacity: 0.5; }
+}
+
+/* --- SEZIONE CORPUS (griglia 10 opere) ------------------------------------ */
+.corpus {
+  position: relative;
+  z-index: var(--z-content);
+  background: var(--ink-void);
+  border-top: var(--border-pen);
+  padding-block: var(--space-2xl);
+}
+
+.section-head {
+  margin-bottom: var(--space-xl);
+}
+.section-head h2 {
+  font-size: var(--step-4);
+  font-style: italic;
+  max-width: 18ch;
+}
+.section-head p {
+  margin-top: var(--space-s);
+  color: var(--breath-grey);
+}
+
+.corpus__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 1px;                       /* le fessure del recinto */
+  background: var(--ink-pelt);    /* le linee tra le schede */
+  border: var(--border-pen);
+}
+
+/* --- SCHEDA OPERA (cartiglio da catalogo) --------------------------------- */
+.work {
+  position: relative;
+  background: var(--ink-ash);
+  padding: var(--space-m);
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+  overflow: hidden;
+  isolation: isolate;
+  transition: background var(--dur-ui) var(--ease-out);
+}
+.work:hover { background: #181311; }
+
+/* provino visivo arrestato: canvas di rumore finché l'asset non esiste */
+.work__plate {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.5;
+  filter: contrast(0.9) brightness(0.8);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 78%);
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 78%);
+}
+.work__plate canvas,
+.work__plate img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* il rosso-velo affiora all'hover e si ritrae */
+.work::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(80% 60% at 50% 80%, var(--held-red-veil), transparent 70%);
+  opacity: 0;
+  transition: opacity var(--dur-enter) var(--ease-breath);
+}
+.work:hover::after { opacity: 1; }
+
+.work__no {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--track-label);
+  color: var(--breath-grey);
+}
+.work__title {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  font-weight: 360;
+  font-style: italic;
+  color: var(--bone-raw);
+  margin-top: auto;
+}
+.work__medium {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--breath-grey);
+  letter-spacing: 0.04em;
+}
+.work__state {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--held-red);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+}
+
+/* il verso sepolto: appare in grigio-fiato solo all'hover (CONCEPT §6.5) */
+.work__verso {
+  font-family: var(--font-text);
+  font-style: italic;
+  font-size: var(--step--1);
+  color: var(--breath-grey);
+  opacity: 0;
+  max-height: 0;
+  transition: opacity var(--dur-enter) var(--ease-out);
+}
+.work:hover .work__verso,
+.work:focus-within .work__verso { opacity: 0.85; max-height: 4em; }
+
+/* --- COLOPHON / piè di pagina --------------------------------------------- */
+.colophon {
+  position: relative;
+  z-index: var(--z-content);
+  background: var(--ink-void);
+  border-top: var(--border-pen);
+  padding-block: var(--space-xl);
+  color: var(--breath-grey);
+}
+.colophon .wrap { display: grid; gap: var(--space-s); }
+.colophon strong { color: var(--bone); font-weight: 400; }
+
+/* --- INGRESSI allo scroll (IntersectionObserver aggiunge .is-in) ---------- */
+/* opacità + 8px su + sfocatura che si dissolve, ma si ferma a 0.92 (non finito) */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(8px);
+  filter: blur(6px);
+  transition:
+    opacity var(--dur-enter) var(--ease-out),
+    transform var(--dur-enter) var(--ease-out),
+    filter var(--dur-enter) var(--ease-out);
+  will-change: opacity, transform;
+}
+[data-reveal].is-in {
+  opacity: 0.96;          /* mai 1: anche la comparsa resta non finita */
+  transform: translateY(0);
+  filter: blur(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { opacity: 1; transform: none; filter: none; transition: none; }
+}
+
+/* --- CURSORE custom (segno osso; vira al rosso vicino alle zone-rosso) ----- */
+.cursor {
+  position: fixed;
+  top: 0; left: 0;
+  z-index: var(--z-cursor);
+  width: 10px; height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  border: 1px solid var(--bone);
+  pointer-events: none;
+  mix-blend-mode: difference;
+  transition: width var(--dur-ui) var(--ease-out),
+              height var(--dur-ui) var(--ease-out),
+              border-color var(--dur-ui) var(--ease-out),
+              opacity var(--dur-ui) var(--ease-out);
+}
+.cursor.is-hot { border-color: var(--held-red); width: 26px; height: 26px; margin: -13px 0 0 -13px; }
+.cursor.is-hidden { opacity: 0; }
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .cursor { display: none; }
+}
+
+/* --- responsive ----------------------------------------------------------- */
+@media (max-width: 640px) {
+  .climate { right: var(--space-m); top: auto; bottom: var(--space-m); }
+  .pen-frame, .blade { display: none; } /* meno cornice su mobile */
+}

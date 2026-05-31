@@ -1,0 +1,103 @@
+/* =============================================================================
+   DESIGN TOKENS — "L'attesa del coltello"
+   Fonte unica di verità per palette, tipografia, scala, motion.
+   Derivati da /output/identita.md. Non scrivere valori HEX altrove nel CSS.
+   Tutto nasce da una posizione: l'arresto prima della risoluzione.
+   ============================================================================= */
+
+:root {
+  /* --- NEUTRI: "osso e fiato" (quasi acromatico) --------------------------- */
+  --ink-void:    #0B0A0A; /* fondo più profondo: nero con un soffio caldo, mai #000 */
+  --ink-ash:     #15110F; /* fondo base pagina / scena 3D */
+  --ink-pelt:    #221B18; /* superfici sollevate, pannelli, bordo del recinto */
+  --breath-grey: #6E6661; /* grigio-fiato: testo secondario, didascalie, linee */
+  --breath-haze: #9A918B; /* foschia: hover del testo secondario */
+  --bone:        #D9CFC2; /* osso: testo primario, titoli, tratto */
+  --bone-raw:    #EAE3D6; /* osso chiaro: display, highlight rari */
+
+  /* --- ACCENTO: "il rosso trattenuto" (sangue sotto la pelle, mai versato) -- */
+  --held-red:      #7A2E26; /* rosso cupo, desaturato: micro-accenti, foco */
+  --held-red-deep: #4A1C18; /* si ritira nel buio (fine pulsazione) */
+  --held-red-veil: rgba(122, 46, 38, 0.14); /* velo: bagliore che non diventa colore */
+
+  /* --- TEMPERATURA: "35,9°C" (calore corporeo senza colore riconoscibile) --- */
+  --warmth-core: radial-gradient(
+    120% 90% at 50% 38%,
+    #1C1512 0%,
+    #120D0B 48%,
+    var(--ink-void) 100%
+  );
+
+  /* --- GRANA DI DIFFUSIONE (residuo del denoise mai completato) ------------- */
+  --grain-opacity: 0.06; /* overlay film statico su tutta la pagina */
+  --grain-blend: overlay;
+
+  /* --- TIPOGRAFIA: famiglie ------------------------------------------------- */
+  /* Display: serif da incisione (l'umano, la mano). Variable font.            */
+  --font-display: 'Fraunces', 'Spectral', Georgia, 'Times New Roman', serif;
+  /* Testo lungo: transitional da archivio (la voce del curatore).             */
+  --font-text: 'Newsreader', 'Spectral', Georgia, serif;
+  /* Dati/provenienza: mono (lo strumento, l'IA, il referto).                  */
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* --- TIPOGRAFIA: scala modulare (ratio 1.25, minor third) ----------------- */
+  --step--1: 0.80rem;  /* metadati mono, cartigli */
+  --step-0:  1.00rem;  /* corpo */
+  --step-1:  1.25rem;  /* sottotitoli */
+  --step-2:  1.563rem; /* titoli opera (piccoli) */
+  --step-3:  1.953rem; /* titoli opera */
+  --step-4:  3.052rem; /* titolo sezione */
+  --step-5:  clamp(3.5rem, 9vw, 7.5rem); /* titolo-sala display */
+
+  --leading-air:  1.78; /* il respiro: leading ampio sui testi */
+  --leading-tight: 1.06; /* display */
+  --measure: 64ch;       /* misura di riga da museo (lettura lenta) */
+
+  /* tracking */
+  --track-display: -0.01em;
+  --track-label:   0.12em; /* maiuscoletto da inventario */
+
+  /* --- SPAZIATURA (scala 8px, da catalogo) --------------------------------- */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs:  0.75rem;
+  --space-s:   1rem;
+  --space-m:   1.5rem;
+  --space-l:   2.5rem;
+  --space-xl:  4rem;
+  --space-2xl: 6.5rem;
+  --space-3xl: 10rem;
+
+  /* bordo del recinto */
+  --border-pen: 1px solid var(--ink-pelt);
+  --radius: 2px; /* quasi spigolo vivo, da lastra */
+
+  /* --- MOTION: durate e curve ---------------------------------------------- */
+  /* La lentezza è dell'ATMOSFERA; l'interazione resta reattiva e breve.       */
+  --dur-tap:    140ms; /* feedback al click */
+  --dur-ui:     260ms; /* cambi di stato UI */
+  --dur-enter:  680ms; /* ingressi scenografici */
+
+  /* cicli ambientali lunghissimi (mai percepiti come loop) */
+  --dur-breath: 8400ms;  /* battito a ~14 cicli/min (respiro a riposo) */
+  --dur-drift:  13000ms; /* deriva della grana / alone */
+
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);   /* ingressi espressivi */
+  --ease-breath: cubic-bezier(0.37, 0, 0.63, 1);  /* sinusoidale, dentro-fuori */
+
+  /* --- LIVELLI (z) ---------------------------------------------------------- */
+  --z-scene:   0;
+  --z-content: 10;
+  --z-grain:   50;
+  --z-cursor:  100;
+
+  color-scheme: dark;
+}
+
+/* Versione calma: si spengono denoise vivo, pulsazione e grana viva.
+   Resta tutto leggibile (i valori statici sotto vengono usati dal JS/CSS). */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --grain-opacity: 0.045;
+  }
+}
